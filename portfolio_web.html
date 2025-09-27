@@ -1,0 +1,947 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayush Kumar Sahu | Data Analyst Portfolio</title>
+    <meta name="description" content="London-based Data Analyst transforming complex data into actionable insights with SQL, Python, and advanced visualization techniques.">
+    <script src="https://cdn.tailwindcss.com">
+        // Add CSS for sparkling stars
+        const style = document.createElement('style');
+        style.textContent = `
+            .sparkling-star {
+                animation: twinkle 2s infinite alternate;
+                z-index: 1;
+            }
+            @keyframes twinkle {
+                0% { opacity: 0.4; transform: scale(0.8); }
+                100% { opacity: 1; transform: scale(1.2); }
+            }
+            .sparkling-star svg {
+                width: 100%;
+                height: 100%;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+<script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+    <script src="https://unpkg.com/smooth-scrollbar@8.8.1/dist/smooth-scrollbar.js"></script>
+    <style>
+        @keyframes slide-up {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes text-shimmer {
+            0% { background-position: -100% 0; }
+            100% { background-position: 100% 0; }
+        }
+        .animate-slide-up {
+            animation: slide-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .animate-fade-in {
+            animation: fade-in 1s ease-out forwards;
+        }
+        .animate-text-shimmer {
+            animation: text-shimmer 3s linear infinite;
+        }
+@keyframes draw {
+            to { stroke-dashoffset: -100; }
+        }
+        @keyframes grow {
+            to { height: 100%; }
+        }
+        @keyframes bar-grow {
+            0%, 100% { height: 0%; }
+            50% { height: 100%; }
+        }
+@keyframes pulse-dot {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        .animate-pulse-dot {
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Inter:wght@300;400;500&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0B0B12;
+            color: #EAF4FF;
+            overflow-x: hidden;
+            position: relative;
+        }
+        @keyframes hueFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .hue-flow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.06;
+            background: linear-gradient(270deg, #00D1FF, #7A5CFF, #00D1FF);
+            background-size: 400% 400%;
+            animation: hueFlow 18s ease infinite;
+            pointer-events: none;
+        }
+        .hue-spotlight {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(122,92,255,0.15) 0%, rgba(0,209,255,0) 70%);
+            pointer-events: none;
+            z-index: -1;
+            filter: blur(40px);
+            transform: translate(-50%, -50%);
+        }
+.glass-card {
+            background: rgba(11, 11, 18, 0.24);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(122, 92, 255, 0.24);
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #00D1FF 0%, #7A5CFF 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .kpi-cube {
+            transform-style: preserve-3d;
+            animation: rotate 12s infinite linear;
+        }
+        @keyframes rotate {
+            0% { transform: rotateY(0deg) rotateX(10deg); }
+            100% { transform: rotateY(360deg) rotateX(10deg); }
+        }
+        .nav-link {
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+        .nav-link:hover {
+            transform: translateY(-3px);
+        }
+        .cta-button {
+            transition: transform 0.3s ease;
+        }
+        .cta-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 20px rgba(122, 92, 255, 0.3);
+        }
+        .cta-button-secondary {
+            transition: transform 0.3s ease;
+        }
+        .cta-button-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(122, 92, 255, 0.2);
+        }
+        .social-icon {
+            @apply w-12 h-12 rounded-full flex items-center justify-center glass-card hover:bg-gradient-to-r from-blue-500/20 to-purple-600/20 transition-all duration-300;
+        }
+        .social-icon:hover {
+            transform: translateY(-3px) scale(1.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen relative">
+<div id="vanta-globe" class="fixed inset-0 -z-10"></div>
+    <div class="hue-flow"></div>
+    <div class="hue-spotlight" id="hueSpotlight"></div>
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 py-6 px-8 flex justify-center items-center glass-card bg-[#0B0B12]/80">
+<div class="hidden md:flex space-x-6">
+            <a href="#home" class="nav-link relative px-6 py-3 rounded-full text-lg font-medium overflow-hidden group">
+                <span class="relative z-10">Home</span>
+                <span class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300"></span>
+            </a>
+            <a href="#about" class="nav-link relative px-6 py-3 rounded-full text-lg font-medium overflow-hidden group">
+                <span class="relative z-10">About</span>
+                <span class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300"></span>
+            </a>
+            <a href="#skills" class="nav-link relative px-6 py-3 rounded-full text-lg font-medium overflow-hidden group">
+                <span class="relative z-10">Skills</span>
+                <span class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300"></span>
+            </a>
+            <a href="#projects" class="nav-link relative px-6 py-3 rounded-full text-lg font-medium overflow-hidden group">
+                <span class="relative z-10">Projects</span>
+                <span class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300"></span>
+            </a>
+            <a href="#experience" class="nav-link relative px-6 py-3 rounded-full text-lg font-medium overflow-hidden group">
+                <span class="relative z-10">Experience</span>
+                <span class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300"></span>
+            </a>
+            <a href="#certifications" class="nav-link relative px-6 py-3 rounded-full text-lg font-medium overflow-hidden group">
+                <span class="relative z-10">Certifications</span>
+                <span class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300"></span>
+            </a>
+            <a href="#contact" class="nav-link relative px-6 py-3 rounded-full text-lg font-medium overflow-hidden group">
+                <span class="relative z-10">Contact</span>
+                <span class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300"></span>
+            </a>
+        </div>
+<button class="glass-card p-3 rounded-full md:hidden">
+            <i data-feather="menu"></i>
+        </button>
+    </nav>
+    <!-- Hero Section -->
+    <main id="home" class="container mx-auto px-6 pt-32 pb-20 relative z-10" data-scroll-section>
+        <h1 class="text-5xl md:text-7xl font-bold font-['Space_Grotesk'] mb-8 text-center animate-fade-in">
+            <span class="gradient-text inline-block">
+                <span class="animate-text-shimmer bg-[linear-gradient(110deg,#00D1FF,45%,#7A5CFF,55%,#00D1FF)] bg-[length:250%_100%] bg-clip-text text-transparent">
+                    AYUSH KUMAR SAHU
+                </span>
+            </span>
+        </h1>
+<!-- Animated Data Elements -->
+        <div class="absolute left-0 top-0 w-full h-full overflow-hidden pointer-events-none">
+                <!-- Large Animated Bar Chart -->
+                <div class="absolute top-40 right-10 w-64 h-48 opacity-40">
+                    <div class="flex items-end h-full space-x-2">
+                        <div class="w-8 h-0 bg-gradient-to-t from-blue-500 to-purple-600 rounded-t-lg animate-bar" 
+                             style="animation: bar-grow 3s ease-in-out infinite;"></div>
+                        <div class="w-8 h-0 bg-gradient-to-t from-blue-500 to-purple-600 rounded-t-lg animate-bar" 
+                             style="animation: bar-grow 3s ease-in-out infinite 0.3s;"></div>
+                        <div class="w-8 h-0 bg-gradient-to-t from-blue-500 to-purple-600 rounded-t-lg animate-bar" 
+                             style="animation: bar-grow 3s ease-in-out infinite 0.6s;"></div>
+                        <div class="w-8 h-0 bg-gradient-to-t from-blue-500 to-purple-600 rounded-t-lg animate-bar" 
+                             style="animation: bar-grow 3s ease-in-out infinite 0.9s;"></div>
+                        <div class="w-8 h-0 bg-gradient-to-t from-blue-500 to-purple-600 rounded-t-lg animate-bar" 
+                             style="animation: bar-grow 3s ease-in-out infinite 1.2s;"></div>
+                        <div class="w-8 h-0 bg-gradient-to-t from-blue-500 to-purple-600 rounded-t-lg animate-bar" 
+                             style="animation: bar-grow 3s ease-in-out infinite 1.5s;"></div>
+                        <div class="w-8 h-0 bg-gradient-to-t from-blue-500 to-purple-600 rounded-t-lg animate-bar" 
+                             style="animation: bar-grow 3s ease-in-out infinite 1.8s;"></div>
+                    </div>
+                </div>
+                <!-- Additional Data Streams -->
+<div class="absolute -left-20 top-1/4 w-64 h-64 opacity-20">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="none" stroke="#00D1FF" stroke-width="1" stroke-dasharray="5,5" 
+                        d="M10,10 Q50,30 90,10 T170,30" class="animate-draw" style="animation: draw 8s linear infinite;"></path>
+                    <path fill="none" stroke="#7A5CFF" stroke-width="1" stroke-dasharray="5,5"
+                        d="M10,50 Q50,70 90,50 T170,70" class="animate-draw" style="animation: draw 10s linear infinite 1s;"></path>
+                </svg>
+            </div>
+            <div class="absolute -right-20 top-2/3 w-64 h-64 opacity-20">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="none" stroke="#7A5CFF" stroke-width="1" stroke-dasharray="5,5"
+                        d="M10,10 Q50,30 90,10 T170,30" class="animate-draw" style="animation: draw 9s linear infinite 0.5s;"></path>
+                    <path fill="none" stroke="#00D1FF" stroke-width="1" stroke-dasharray="5,5"
+                        d="M10,50 Q50,70 90,50 T170,70" class="animate-draw" style="animation: draw 7s linear infinite 1.5s;"></path>
+                </svg>
+            </div>
+        </div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center relative">
+<div class="space-y-12">
+<div class="space-y-16 mt-8">
+<div class="text-center">
+            <h1 class="text-5xl md:text-7xl font-bold font-['Space_Grotesk'] leading-tight animate-slide-up [animation-delay:0.1s]">
+                <span class="gradient-text inline-block">
+                    <span class="animate-text-shimmer bg-[linear-gradient(110deg,#00D1FF,45%,#7A5CFF,55%,#00D1FF)] bg-[length:250%_100%] bg-clip-text text-transparent">
+                        DATA ANALYST
+                    </span>
+                </span>
+            </h1>
+            <h2 class="text-4xl md:text-6xl font-bold font-['Space_Grotesk'] mt-4 leading-tight">
+                <span class="inline-block overflow-hidden">
+                    <span class="animate-slide-up block [animation-delay:0.3s]">I turn messy data</span>
+                </span>
+                <span class="inline-block overflow-hidden">
+                    <span class="animate-slide-up block [animation-delay:0.5s] gradient-text">into clear decisions.</span>
+                </span>
+            </h2>
+        </div>
+<p class="text-xl md:text-2xl text-gray-300 max-w-2xl leading-relaxed animate-fade-in [animation-delay:0.5s]">
+                        Transforming complex datasets into actionable insights with SQL, Python, and advanced analytics.<br>
+                        Currently pursuing MSc in Big Data Science at Queen Mary University of London.
+                    </p>
+                    <div class="flex flex-wrap gap-6 pt-4 animate-fade-in [animation-delay:0.7s]">
+                        <a href="#projects" class="cta-button relative px-10 py-5 rounded-full font-medium text-lg overflow-hidden group">
+                            <span class="relative z-10">View Projects</span>
+                            <span class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full group-hover:opacity-90 transition-all duration-300"></span>
+                            <span class="absolute inset-0 border-2 border-transparent group-hover:border-white/20 rounded-full transition-all duration-300"></span>
+                        </a>
+                            <a href="https://huggingface.co/EAZY-647/resolve/main/CV_DATA_ANALYST.pdf" class="cta-button-secondary relative px-10 py-5 rounded-full font-medium text-lg overflow-hidden group">
+                                <span class="relative z-10">Download CV</span>
+                                <span class="absolute inset-0 bg-transparent border-2 border-[#7A5CFF] rounded-full group-hover:bg-[#7A5CFF]/10 transition-all duration-300"></span>
+                            </a>
+</div>
+</div>
+            <div class="relative h-64 md:h-80 flex items-center justify-center mt-8 md:mt-0">
+                <!-- Larger Center Bar Chart -->
+                <div class="absolute top-20 left-0 w-full h-full flex items-end justify-center space-x-2 px-4 opacity-90">
+                    <div class="w-8 h-0 bg-gradient-to-t from-blue-500 to-purple-600 rounded-t-lg animate-grow" 
+                         style="animation: grow 1.2s ease-out forwards;"></div>
+                    <div class="w-8 h-0 bg-gradient-to-t from-blue-500 to-purple-600 rounded-t-lg animate-grow" 
+                         style="animation: grow 1.4s ease-out forwards 0.2s;"></div>
+                    <div class="w-8 h-0 bg-gradient-to-t from-blue-500 to-purple-600 rounded-t-lg animate-grow" 
+                         style="animation: grow 1.6s ease-out forwards 0.4s;"></div>
+                    <div class="w-8 h-0 bg-gradient-to-t from-blue-500 to-purple-600 rounded-t-lg animate-grow" 
+                         style="animation: grow 1.8s ease-out forwards 0.6s;"></div>
+                    <div class="w-8 h-0 bg-gradient-to-t from-blue-500 to-purple-600 rounded-t-lg animate-grow" 
+                         style="animation: grow 2s ease-out forwards 0.8s;"></div>
+                    <div class="w-8 h-0 bg-gradient-to-t from-blue-500 to-purple-600 rounded-t-lg animate-grow" 
+                         style="animation: grow 2.2s ease-out forwards 1.0s;"></div>
+                </div>
+<!-- 3D KPI Cubes -->
+<div class="absolute kpi-cube w-32 h-32 md:w-40 md:h-40">
+<div class="absolute w-full h-full glass-card flex items-center justify-center" style="transform: translateZ(70px);">
+                        <span class="text-4xl font-bold gradient-text">+25%</span>
+                    </div>
+                    <div class="absolute w-full h-full glass-card flex items-center justify-center" style="transform: rotateY(90deg) translateZ(70px);">
+                        <span class="text-4xl font-bold gradient-text">-18%</span>
+                    </div>
+                    <div class="absolute w-full h-full glass-card flex items-center justify-center" style="transform: rotateY(180deg) translateZ(70px);">
+                        <span class="text-4xl font-bold gradient-text">+6pp</span>
+                    </div>
+                    <div class="absolute w-full h-full glass-card flex items-center justify-center" style="transform: rotateY(270deg) translateZ(70px);">
+                        <span class="text-4xl font-bold gradient-text">+12%</span>
+                    </div>
+                </div>
+                <!-- Floating Charts -->
+                <div class="absolute -bottom-6 -left-6 w-24 h-24 md:w-32 md:h-32 glass-card rounded-xl p-3 md:p-4 opacity-80">
+                <div class="w-full h-full bg-gradient-to-br from-blue-500/20 to-purple-600/20 rounded-lg overflow-hidden">
+                    <img src="http://static.photos/technology/320x240/4" alt="Data visualization example" class="w-full h-full object-cover">
+                </div>
+</div>
+                <div class="absolute -top-6 -right-6 w-24 h-24 md:w-28 md:h-28 glass-card rounded-xl p-3 md:p-4 opacity-80">
+                <div class="w-full h-full bg-gradient-to-br from-blue-500/20 to-purple-600/20 rounded-lg overflow-hidden">
+                    <img src="http://static.photos/technology/320x240/5" alt="Analytics dashboard" class="w-full h-full object-cover">
+                </div>
+</div>
+            </div>
+        </div>
+    </main>
+<div class="max-w-4xl mx-auto mt-32">
+        <h1 class="text-5xl md:text-6xl font-bold font-['Space_Grotesk'] mb-10 animate-fade-in">
+<span class="gradient-text inline-block">
+                <span class="animate-text-shimmer bg-[linear-gradient(110deg,#00D1FF,45%,#7A5CFF,55%,#00D1FF)] bg-[length:250%_100%] bg-clip-text text-transparent">
+                    About Me
+                </span>
+            </span>
+        </h1>
+<div class="glass-card p-8 md:p-10 rounded-3xl mb-16 hover:shadow-lg hover:shadow-[#00D1FF]/20 transition-all duration-300 animate-fade-in [animation-delay:0.2s]">
+<p class="text-xl md:text-2xl leading-relaxed mb-8">
+London-based Data Analyst focused on transforming marketing, product, and content telemetry into clear, measurable decisions. Comfortable across SQL/Python analytics, visualization (Tableau/Power BI), GA4 + BigQuery funnels, and time-series forecasting.
+                </p>
+                <div class="availability-chip inline-flex items-center px-6 py-3 rounded-full text-lg font-medium mt-6 animate-pulse">
+<div class="w-3 h-3 rounded-full bg-green-400 mr-3 animate-pulse"></div>
+                    <span>London-based and available for internships or full-time roles.</span>
+                </div>
+            </div>
+            <div class="glass-card p-6 rounded-2xl hover:scale-[1.02] transition-all">
+                <h3 class="text-xl font-bold mb-3 flex items-center">
+                    <div class="w-8 h-8 rounded-full bg-blue-500/20 mr-4 flex items-center justify-center">
+                        <i data-feather="award" class="text-blue-400"></i>
+                    </div>
+                    Education
+                </h3>
+                <ul class="space-y-3">
+                    <li>
+                        <h4 class="font-bold">MSc, Big Data Science</h4>
+                        <p class="text-gray-300">Queen Mary University of London, UK</p>
+                        <p class="text-sm text-gray-400">Sep 2024 – Sep 2025</p>
+                    </li>
+                    <li>
+                        <h4 class="font-bold">BTech, Electronics & Communication Engineering</h4>
+                        <p class="text-gray-300">SRM Institute of Technology, Chennai, India</p>
+                        <p class="text-sm text-gray-400">May 2019 – Dec 2023</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="container mx-auto px-6 py-32 relative z-10">
+<!-- Floating Data Points -->
+        <div class="absolute left-0 top-0 w-full h-full overflow-hidden pointer-events-none">
+            <div class="absolute w-2 h-2 rounded-full bg-blue-500/40 animate-pulse-dot" 
+                 style="top: 20%; left: 15%;"></div>
+            <div class="absolute w-3 h-3 rounded-full bg-purple-500/40 animate-pulse-dot" 
+                 style="top: 40%; left: 85%; animation-delay: 0.5s;"></div>
+            <div class="absolute w-2 h-2 rounded-full bg-blue-500/40 animate-pulse-dot" 
+                 style="top: 70%; left: 30%; animation-delay: 1s;"></div>
+            <div class="absolute w-3 h-3 rounded-full bg-purple-500/40 animate-pulse-dot" 
+                 style="top: 30%; left: 60%; animation-delay: 1.5s;"></div>
+        </div>
+        <h2 class="text-5xl md:text-6xl font-bold font-['Space_Grotesk'] mb-16 text-center animate-fade-in">
+            <span class="gradient-text inline-block">
+                <span class="animate-text-shimmer bg-[linear-gradient(110deg,#00D1FF,45%,#7A5CFF,55%,#00D1FF)] bg-[length:250%_100%] bg-clip-text text-transparent">
+                    Skills & Expertise
+                </span>
+            </span>
+        </h2>
+<!-- Animated Skill Bars -->
+        <div class="absolute left-0 bottom-0 w-full h-1 glass-card opacity-20"></div>
+
+        <!-- SQL -->
+<div class="glass-card p-8 rounded-2xl mb-8 hover:shadow-lg hover:shadow-[#7A5CFF]/20 transition-all duration-300 animate-fade-in [animation-delay:0.2s]">
+<div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                    <i data-feather="database" class="text-blue-400 w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold">SQL</h3>
+            </div>
+            <p class="text-gray-300 mb-2">Joins, CTEs, subqueries, window functions; Data quality checks; Query tuning basics</p>
+            <div class="w-full bg-gray-700/50 rounded-full h-2.5">
+                <div class="bg-blue-500 h-2.5 rounded-full" style="width: 90%"></div>
+            </div>
+        </div>
+
+        <!-- Visualization -->
+        <div class="glass-card p-6 rounded-xl mb-6">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                    <i data-feather="bar-chart-2" class="text-purple-400 w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold">Visualization</h3>
+            </div>
+            <p class="text-gray-300 mb-2">Tableau (dashboards, calculated fields, filters), Power BI; Matplotlib, Seaborn</p>
+            <div class="w-full bg-gray-700/50 rounded-full h-2.5">
+                <div class="bg-purple-500 h-2.5 rounded-full" style="width: 85%"></div>
+            </div>
+        </div>
+
+        <!-- Python -->
+        <div class="glass-card p-6 rounded-xl mb-6">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                    <i data-feather="code" class="text-blue-400 w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold">Python</h3>
+            </div>
+            <p class="text-gray-300 mb-2">Pandas, NumPy, data wrangling, EDA; scikit-learn (metrics, model evaluation)</p>
+            <div class="w-full bg-gray-700/50 rounded-full h-2.5">
+                <div class="bg-blue-500 h-2.5 rounded-full" style="width: 88%"></div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="glass-card p-6 rounded-xl mb-6">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                    <i data-feather="trending-up" class="text-purple-400 w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold">Statistics</h3>
+            </div>
+            <p class="text-gray-300 mb-2">Descriptive stats, hypothesis testing, confidence intervals, A/B testing basics</p>
+            <div class="w-full bg-gray-700/50 rounded-full h-2.5">
+                <div class="bg-purple-500 h-2.5 rounded-full" style="width: 82%"></div>
+            </div>
+        </div>
+
+        <!-- Excel -->
+        <div class="glass-card p-6 rounded-xl mb-6">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                    <i data-feather="file-text" class="text-blue-400 w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold">Excel</h3>
+            </div>
+            <p class="text-gray-300 mb-2">PivotTables, XLOOKUP/LOOKUP, Power Query, data validation, cleaning</p>
+            <div class="w-full bg-gray-700/50 rounded-full h-2.5">
+                <div class="bg-blue-500 h-2.5 rounded-full" style="width: 80%"></div>
+            </div>
+        </div>
+
+        <!-- Cloud & Warehousing -->
+        <div class="glass-card p-6 rounded-xl mb-6">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                    <i data-feather="cloud" class="text-purple-400 w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold">Cloud & Warehousing</h3>
+            </div>
+            <p class="text-gray-300 mb-2">AWS (S3, Athena), GCP (BigQuery, Looker/Looker Studio), Azure (Data Factory); ETL/ELT, data lakes</p>
+            <div class="w-full bg-gray-700/50 rounded-full h-2.5">
+                <div class="bg-purple-500 h-2.5 rounded-full" style="width: 75%"></div>
+            </div>
+        </div>
+
+        <!-- Workflow -->
+        <div class="glass-card p-6 rounded-xl">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                    <i data-feather="git-merge" class="text-blue-400 w-6 h-6"></i>
+                </div>
+                <h3 class="text-xl font-bold">Workflow</h3>
+            </div>
+            <p class="text-gray-300 mb-2">Version control (Git), reproducible notebooks (Jupyter/Colab), documentation</p>
+            <div class="w-full bg-gray-700/50 rounded-full h-2.5">
+                <div class="bg-blue-500 h-2.5 rounded-full" style="width: 85%"></div>
+            </div>
+        </div>
+    </section>
+<!-- Projects Section -->
+    <section id="projects" class="container mx-auto px-6 py-32 relative z-10">
+<!-- Animated Pie Chart -->
+        <div class="absolute right-10 top-20 w-40 h-40 opacity-10">
+            <svg viewBox="0 0 100 100">
+                <path d="M50,50 L50,0 A50,50 0 0,1 90,30 Z" fill="#00D1FF" 
+                      class="animate-spin" style="animation: spin 12s linear infinite; transform-origin: 50% 50%;"></path>
+                <path d="M50,50 L90,30 A50,50 0 0,1 50,100 Z" fill="#7A5CFF" 
+                      class="animate-spin" style="animation: spin 12s linear infinite reverse; transform-origin: 50% 50%;"></path>
+            </svg>
+        </div>
+<h2 class="text-4xl md:text-5xl font-bold font-['Space_Grotesk'] mb-8 text-center gradient-text">Projects</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+                <!-- Floating Chart Elements -->
+                <div class="absolute -left-10 top-1/3 w-24 h-24 glass-card rounded-full opacity-20 animate-float"></div>
+                <div class="absolute -right-10 bottom-1/4 w-16 h-16 glass-card rounded-full opacity-20 animate-float" style="animation-delay: 2s;"></div>
+<div class="glass-card p-4 rounded-xl hover:scale-105 transition-all">
+                <div class="h-40 bg-gradient-to-br from-blue-500/20 to-purple-600/20 rounded-lg mb-3 overflow-hidden">
+                    <img src="http://static.photos/technology/640x360/1" alt="Marketing Mix Modeling dashboard" class="w-full h-full object-cover">
+</div>
+                <h3 class="text-xl font-bold mb-2">Marketing Mix Modeling</h3>
+                <p class="text-gray-300 text-sm mb-3">Bayesian MMM with adstock & saturation modeling for budget optimization</p>
+                <div class="flex flex-wrap gap-1">
+<span class="text-xs px-3 py-1 rounded-full bg-blue-500/20">BigQuery</span>
+                    <span class="text-xs px-3 py-1 rounded-full bg-purple-500/20">Python</span>
+                    <span class="text-xs px-3 py-1 rounded-full bg-blue-500/20">Looker</span>
+                </div>
+            </div>
+            <div class="glass-card p-6 rounded-xl hover:scale-105 transition-all">
+                <div class="h-48 bg-gradient-to-br from-blue-500/20 to-purple-600/20 rounded-lg mb-4 overflow-hidden">
+                    <img src="http://static.photos/technology/640x360/2" alt="A/B Testing dashboard" class="w-full h-full object-cover">
+                </div>
+<h3 class="text-2xl font-bold mb-2">Experimentation Framework</h3>
+                <p class="text-gray-300 mb-4">Standardized A/B testing with CUPED variance reduction</p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="text-xs px-3 py-1 rounded-full bg-blue-500/20">GA4</span>
+                    <span class="text-xs px-3 py-1 rounded-full bg-purple-500/20">SQL</span>
+                    <span class="text-xs px-3 py-1 rounded-full bg-blue-500/20">Looker</span>
+                </div>
+            </div>
+            <div class="glass-card p-6 rounded-xl hover:scale-105 transition-all">
+                <div class="h-48 bg-gradient-to-br from-blue-500/20 to-purple-600/20 rounded-lg mb-4 overflow-hidden">
+                    <img src="http://static.photos/technology/640x360/3" alt="YouTube Analytics dashboard" class="w-full h-full object-cover">
+                </div>
+<h3 class="text-2xl font-bold mb-2">YouTube Forecasting</h3>
+                <p class="text-gray-300 mb-4">28-day watch-time forecasts with seasonality effects</p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="text-xs px-3 py-1 rounded-full bg-blue-500/20">BigQuery</span>
+                    <span class="text-xs px-3 py-1 rounded-full bg-purple-500/20">Prophet</span>
+                    <span class="text-xs px-3 py-1 rounded-full bg-blue-500/20">Looker</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Experience Section -->
+<section id="experience" class="container mx-auto px-6 py-32 relative z-10">
+<h2 class="text-4xl md:text-5xl font-bold font-['Space_Grotesk'] mb-8 text-center gradient-text">Experience</h2>
+        <div class="relative">
+            <div class="absolute left-6 md:left-8 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 to-purple-600"></div>
+            <div class="space-y-8 pl-10 md:pl-16 relative">
+                <!-- Timeline Nodes -->
+                <div class="absolute left-6 md:left-8 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 to-purple-600">
+                    <div class="absolute -left-1 top-0 w-3 h-3 rounded-full bg-blue-500 animate-pulse-dot"></div>
+                    <div class="absolute -left-1 top-1/4 w-3 h-3 rounded-full bg-purple-500 animate-pulse-dot" style="animation-delay: 0.5s;"></div>
+                    <div class="absolute -left-1 top-2/4 w-3 h-3 rounded-full bg-blue-500 animate-pulse-dot" style="animation-delay: 1s;"></div>
+                    <div class="absolute -left-1 top-3/4 w-3 h-3 rounded-full bg-purple-500 animate-pulse-dot" style="animation-delay: 1.5s;"></div>
+                </div>
+<div class="glass-card p-6 rounded-2xl relative hover:scale-[1.02] transition-all">
+                    <div class="absolute -left-8 md:-left-12 top-6 w-6 h-6 md:w-8 md:h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+                        <i data-feather="briefcase" class="text-white w-4 h-4"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-1">Data Science Intern</h3>
+                    <p class="text-gray-300 mb-2">Corizo | Sep 2023 - Jan 2024</p>
+                    <ul class="list-disc pl-4 space-y-1 text-sm md:text-base">
+                        <li>Python/Pandas EDA across datasets; SQL joins/windows for reporting tables</li>
+                        <li>Refreshed Tableau KPI dashboards; reusable weekly data-quality checks</li>
+                    </ul>
+                </div>
+                <div class="glass-card p-6 rounded-2xl relative hover:scale-[1.02] transition-all">
+                    <div class="absolute -left-8 md:-left-12 top-6 w-6 h-6 md:w-8 md:h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+                        <i data-feather="briefcase" class="text-white w-4 h-4"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-1">Data Science Consultant Intern</h3>
+                    <p class="text-gray-300 mb-2">Rubixe | Apr 2023 - Aug 2023</p>
+                    <ul class="list-disc pl-4 space-y-1 text-sm md:text-base">
+                        <li>Sales/marketing reporting in Power BI/Tableau; standardized stakeholder metrics</li>
+                        <li>Funnel insights informing campaign reallocation decisions</li>
+                    </ul>
+                </div>
+                <div class="glass-card p-6 rounded-2xl relative hover:scale-[1.02] transition-all">
+                    <div class="absolute -left-8 md:-left-12 top-6 w-6 h-6 md:w-8 md:h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+                        <i data-feather="briefcase" class="text-white w-4 h-4"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-1">Programming & Cloud Intern</h3>
+                    <p class="text-gray-300 mb-2">Prodevans | Jan 2022 - Jul 2022</p>
+                    <ul class="list-disc pl-4 space-y-1 text-sm md:text-base">
+                        <li>AWS (S3, Athena, Lambda) ETL scripts for automated reporting</li>
+                        <li>Built monitoring alerts for pipeline failures overnight</li>
+                    </ul>
+                </div>
+                <div class="glass-card p-6 rounded-2xl relative hover:scale-[1.02] transition-all">
+                    <div class="absolute -left-8 md:-left-12 top-6 w-6 h-6 md:w-8 md:h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+                        <i data-feather="briefcase" class="text-white w-4 h-4"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-1">Data Analyst Intern</h3>
+                    <p class="text-gray-300 mb-2">Wizzo Infotech | Jul 2021 - Dec 2021</p>
+                    <ul class="list-disc pl-4 space-y-1 text-sm md:text-base">
+                        <li>Excel/Python data cleaning and operational dashboards</li>
+                        <li>Standardized templates improving weekly leadership visibility reports</li>
+                    </ul>
+                </div>
+            </div>
+</div>
+    </section>
+    <!-- Certifications Section -->
+    <section id="certifications" class="container mx-auto px-6 py-32 relative z-10">
+<h2 class="text-4xl md:text-5xl font-bold font-['Space_Grotesk'] mb-8 text-center gradient-text">Certifications</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+<div class="glass-card p-6 rounded-xl hover:scale-105 transition-all transform hover:rotate-2">
+                <img src="http://static.photos/education/320x240/1" alt="Google Data Analytics Professional Certificate" class="w-full h-auto rounded-lg mb-4">
+                <h3 class="font-bold">Google Data Analytics</h3>
+                <p class="text-sm text-gray-300">Coursera</p>
+            </div>
+            <div class="glass-card p-6 rounded-xl hover:scale-105 transition-all transform hover:-rotate-2">
+                <img src="http://static.photos/education/320x240/2" alt="SQL Associate Certification" class="w-full h-auto rounded-lg mb-4">
+                <h3 class="font-bold">SQL Associate</h3>
+                <p class="text-sm text-gray-300">DataCamp</p>
+            </div>
+            <div class="glass-card p-6 rounded-xl hover:scale-105 transition-all transform hover:rotate-1">
+                <img src="http://static.photos/education/320x240/3" alt="Complete Data Engineering with Azure" class="w-full h-auto rounded-lg mb-4">
+                <h3 class="font-bold">Data Engineering with Azure</h3>
+                <p class="text-sm text-gray-300">Grow Data Skills</p>
+            </div>
+            <div class="glass-card p-6 rounded-xl hover:scale-105 transition-all transform hover:-rotate-1">
+                <img src="http://static.photos/education/320x240/4" alt="Data Science with ML & AI" class="w-full h-auto rounded-lg mb-4">
+                <h3 class="font-bold">Data Science with ML & AI</h3>
+                <p class="text-sm text-gray-300">upGrad</p>
+            </div>
+            <div class="glass-card p-6 rounded-xl hover:scale-105 transition-all transform hover:rotate-3">
+                <img src="http://static.photos/education/320x240/5" alt="Data Science with Machine Learning" class="w-full h-auto rounded-lg mb-4">
+                <h3 class="font-bold">Data Science with ML</h3>
+                <p class="text-sm text-gray-300">Coding Ninjas</p>
+            </div>
+            <div class="glass-card p-6 rounded-xl hover:scale-105 transition-all transform hover:-rotate-3">
+                <img src="http://static.photos/education/320x240/6" alt="Python Foundation with Data Structures" class="w-full h-auto rounded-lg mb-4">
+                <h3 class="font-bold">Python Foundation</h3>
+                <p class="text-sm text-gray-300">Career Labs</p>
+            </div>
+            <div class="glass-card p-6 rounded-xl hover:scale-105 transition-all transform hover:rotate-2">
+                <img src="http://static.photos/education/320x240/7" alt="Google Cloud Fundamentals for AWS Professionals" class="w-full h-auto rounded-lg mb-4">
+                <h3 class="font-bold">Google Cloud Fundamentals</h3>
+                <p class="text-sm text-gray-300">Coursera</p>
+            </div>
+            <div class="glass-card p-6 rounded-xl hover:scale-105 transition-all transform hover:-rotate-2">
+                <img src="http://static.photos/education/320x240/8" alt="Data Science & ML with R" class="w-full h-auto rounded-lg mb-4">
+                <h3 class="font-bold">Data Science & ML with R</h3>
+                <p class="text-sm text-gray-300">Udemy</p>
+            </div>
+</div>
+    </section>
+    <!-- Contact Section -->
+    <section id="contact" class="container mx-auto px-6 py-40 relative z-10">
+<h2 class="text-5xl md:text-6xl font-bold font-['Space_Grotesk'] mb-12 text-center animate-fade-in">
+            <span class="gradient-text inline-block">
+                <span class="animate-text-shimmer bg-[linear-gradient(110deg,#00D1FF,45%,#7A5CFF,55%,#00D1FF)] bg-[length:250%_100%] bg-clip-text text-transparent">
+                    Get In Touch
+                </span>
+            </span>
+        </h2>
+        <div class="max-w-3xl mx-auto glass-card p-10 rounded-3xl hover:shadow-lg hover:shadow-[#7A5CFF]/20 transition-all duration-300 animate-fade-in [animation-delay:0.2s]">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Contact Info</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-center">
+                            <i data-feather="mail" class="mr-3 text-blue-400"></i>
+                            <span>ayushkusahuk@gmail.com</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="phone" class="mr-3 text-purple-400"></i>
+                            <span>+44 740 581 3318</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="map-pin" class="mr-3 text-blue-400"></i>
+                            <span>London, United Kingdom</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Connect</h3>
+                    <div class="flex space-x-4">
+                        <a href="https://www.linkedin.com/in/ayush-kumar-sahu-071350221" class="glass-card p-3 rounded-full hover:scale-110 transition-all">
+                            <i data-feather="linkedin" class="text-blue-400"></i>
+                        </a>
+                        <a href="https://github.com/EAZY-647" target="_blank" rel="noopener noreferrer" class="glass-card p-3 rounded-full hover:scale-110 transition-all">
+                            <i data-feather="github" class="text-purple-400"></i>
+                        </a>
+</div>
+                </div>
+            </div>
+            <form class="space-y-4">
+                <div>
+                    <label for="name" class="block mb-2">Name</label>
+                    <input type="text" id="name" class="w-full glass-card p-3 rounded-lg bg-transparent border border-gray-700">
+                </div>
+                <div>
+                    <label for="email" class="block mb-2">Email</label>
+                    <input type="email" id="email" class="w-full glass-card p-3 rounded-lg bg-transparent border border-gray-700">
+                </div>
+                <div>
+                    <label for="message" class="block mb-2">Message</label>
+                    <textarea id="message" rows="4" class="w-full glass-card p-3 rounded-lg bg-transparent border border-gray-700"></textarea>
+                </div>
+        <button type="submit" class="cta-button relative px-10 py-5 rounded-full font-medium text-lg overflow-hidden group w-full max-w-xs mx-auto mt-8">
+Send Message
+                </button>
+            </form>
+        </div>
+    </section>
+    <script>
+        // Add animated scatter plot
+        function createScatterPlot() {
+            const container = document.createElement('div');
+            container.className = 'absolute inset-0 overflow-hidden pointer-events-none';
+            
+            for (let i = 0; i < 30; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'absolute w-2 h-2 rounded-full bg-blue-500/20';
+                dot.style.left = `${Math.random() * 100}%`;
+                dot.style.top = `${Math.random() * 100}%`;
+                dot.style.animation = `pulse-dot ${2 + Math.random() * 2}s ease-in-out infinite ${Math.random() * 2}s`;
+                container.appendChild(dot);
+            }
+            document.body.appendChild(container);
+        }
+
+        // Animate skill bars on scroll
+        function animateSkillBars() {
+            const skills = document.querySelectorAll('#skills .glass-card');
+            skills.forEach((skill, i) => {
+                const meter = skill.querySelector('div > div');
+                anime({
+                    targets: meter,
+                    width: ['0%', meter.style.width],
+                    duration: 1000,
+                    delay: i * 100,
+                    easing: 'easeOutExpo'
+                });
+            });
+        }
+// Track mouse for hue spotlight
+        document.addEventListener('mousemove', (e) => {
+            const spotlight = document.getElementById('hueSpotlight');
+            spotlight.style.left = `${e.clientX}px`;
+            spotlight.style.top = `${e.clientY}px`;
+        });
+
+        // Initialize Vanta.js globe
+        VANTA.GLOBE({
+el: "#vanta-globe",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0x00d1ff,
+            backgroundColor: 0x0b0b12,
+size: 0.8
+        });
+        // Add floating particles and stars
+        function addFloatingParticles() {
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'floating-particle absolute rounded-full';
+                particle.style.width = `${Math.random() * 10 + 5}px`;
+                particle.style.height = particle.style.width;
+                particle.style.background = `radial-gradient(circle, ${Math.random() > 0.5 ? '#00D1FF' : '#7A5CFF'}, transparent)`;
+                particle.style.left = `${Math.random() * 100}vw`;
+                particle.style.top = `${Math.random() * 100}vh`;
+                particle.style.opacity = Math.random() * 0.4 + 0.1;
+                document.body.appendChild(particle);
+
+                anime({
+                    targets: particle,
+                    x: `${(Math.random() - 0.5) * 200}px`,
+                    y: `${(Math.random() - 0.5) * 200}px`,
+                    duration: 10000 + Math.random() * 10000,
+                    direction: 'alternate',
+                    loop: true,
+                    easing: 'easeInOutSine'
+                });
+            }
+
+            // Add sparkling stars
+            for (let i = 0; i < 15; i++) {
+                const star = document.createElement('div');
+                star.className = 'sparkling-star absolute';
+                star.style.width = `${Math.random() * 8 + 4}px`;
+                star.style.height = star.style.width;
+                star.style.left = `${Math.random() * 100}vw`;
+                star.style.top = `${Math.random() * 100}vh`;
+                star.style.opacity = Math.random() * 0.8 + 0.2;
+                star.style.filter = 'drop-shadow(0 0 4px rgba(255,255,255,0.8))';
+                star.innerHTML = `
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1">
+                        <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
+                    </svg>
+                `;
+                document.body.appendChild(star);
+
+                // Sparkle animation
+                anime({
+                    targets: star,
+                    scale: [0.8, 1.2],
+                    opacity: [0.6, 1],
+                    duration: 2000 + Math.random() * 3000,
+                    direction: 'alternate',
+                    loop: true,
+                    easing: 'easeInOutSine',
+                    delay: Math.random() * 2000
+                });
+
+                // Float animation
+                anime({
+                    targets: star,
+                    translateX: `${(Math.random() - 0.5) * 40}px`,
+                    translateY: `${(Math.random() - 0.5) * 40}px`,
+                    duration: 8000 + Math.random() * 8000,
+                    direction: 'alternate',
+                    loop: true,
+                    easing: 'easeInOutSine'
+                });
+            }
+        }
+document.addEventListener('DOMContentLoaded', () => {
+            addFloatingParticles();
+feather.replace();
+            createScatterPlot();
+            animateSkillBars();
+            // Animate project cards on hover
+            document.querySelectorAll('#projects .glass-card').forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    anime({
+                        targets: card.querySelector('div'),
+                        background: [
+                            { value: 'linear-gradient(to bottom right, rgba(0,209,255,0.2), rgba(122,92,255,0.2))' },
+                            { value: 'linear-gradient(to bottom right, rgba(0,209,255,0.3), rgba(122,92,255,0.3))' }
+                        ],
+                        duration: 500,
+                        easing: 'easeOutQuad'
+                    });
+                });
+                card.addEventListener('mouseleave', () => {
+                    anime({
+                        targets: card.querySelector('div'),
+                        background: 'linear-gradient(to bottom right, rgba(0,209,255,0.2), rgba(122,92,255,0.2))',
+                        duration: 500,
+                        easing: 'easeOutQuad'
+                    });
+                });
+            });
+
+            // Add hue ripple effect to glass cards
+document.querySelectorAll('.glass-card').forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    anime({
+                        targets: card,
+                        boxShadow: [
+                            { value: '0 0 0 rgba(122, 92, 255, 0)', duration: 0 },
+                            { value: '0 0 20px rgba(122, 92, 255, 0.3)', duration: 500 },
+                            { value: '0 0 0 rgba(122, 92, 255, 0)', duration: 500 }
+                        ],
+                        easing: 'easeOutQuad'
+                    });
+                });
+            });
+// Scroll behavior
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            window.scrollTo({
+                top: target.offsetTop,
+                behavior: 'smooth'
+            });
+});
+            });
+            // Add floating hue particles
+            const hueParticles = [];
+            for (let i = 0; i < 12; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'absolute rounded-full w-4 h-4 opacity-20';
+                particle.style.background = `radial-gradient(circle, ${Math.random() > 0.5 ? '#00D1FF' : '#7A5CFF'}, transparent)`;
+                particle.style.left = `${Math.random() * 100}vw`;
+                particle.style.top = `${Math.random() * 100}vh`;
+                document.body.appendChild(particle);
+                hueParticles.push(particle);
+                
+                anime({
+                    targets: particle,
+                    x: `${(Math.random() - 0.5) * 200}px`,
+                    y: `${(Math.random() - 0.5) * 200}px`,
+                    duration: 10000 + Math.random() * 10000,
+                    direction: 'alternate',
+                    loop: true,
+                    easing: 'easeInOutSine'
+                });
+            }
+
+            // Animate KPI numbers
+const kpis = [
+                { element: document.querySelector('.kpi-cube div:nth-child(1) span'), target: 25, suffix: '%' },
+                { element: document.querySelector('.kpi-cube div:nth-child(2) span'), target: 18, suffix: '%' },
+                { element: document.querySelector('.kpi-cube div:nth-child(3) span'), target: 6, suffix: 'pp' },
+                { element: document.querySelector('.kpi-cube div:nth-child(4) span'), target: 12, suffix: '%' }
+            ];
+            
+            kpis.forEach(kpi => {
+                anime({
+                    targets: kpi,
+                    current: [0, kpi.target],
+                    round: 1,
+                    easing: 'easeOutExpo',
+                    duration: 2000,
+                    delay: 500,
+                    update: function() {
+                        kpi.element.textContent = `+${this.animations[0].currentValue}${kpi.suffix}`;
+                    }
+                });
+            });
+        });
+    </script>
+    <!-- Footer -->
+<footer class="glass-card mt-40 py-16 border-t border-[#7A5CFF]/20">
+<div class="container mx-auto px-6 text-center">
+            <p class="text-lg">&copy; 2023 Ayush Kumar Sahu. All rights reserved.</p>
+            <div class="flex justify-center space-x-6 mt-4">
+                        <a href="https://www.linkedin.com/in/ayush-kumar-sahu-071350221" target="_blank" rel="noopener noreferrer" class="social-icon">
+<i data-feather="linkedin" class="w-6 h-6"></i>
+                </a>
+                        <a href="https://github.com/EAZY-647" target="_blank" rel="noopener noreferrer" class="social-icon">
+                            <i data-feather="github" class="w-6 h-6"></i>
+                        </a>
+<a href="mailto:ayushkusahuk@gmail.com" class="social-icon">
+                    <i data-feather="mail" class="w-6 h-6"></i>
+                </a>
+            </div>
+</div>
+    </footer>
+</body>
+</html>
