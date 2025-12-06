@@ -1,679 +1,756 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Github, 
-  Linkedin, 
-  Mail, 
-  MapPin, 
-  ExternalLink, 
-  Moon, 
-  Sun, 
-  Download,
-  Database,
-  Code,
-  Cloud,
-  BarChart,
-  Server,
-  X,
-  Printer,
-  Award,
-  CheckCircle,
-  MonitorPlay,
-  User,
-  GitCommit
-} from 'lucide-react';
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayush Kumar Sahu | Data Portfolio</title>
+    
+    <!-- Tailwind CSS (Styling) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-const Portfolio = () => {
-  const [darkMode, setDarkMode] = useState(false);
-  const [activeSection, setActiveSection] = useState('home');
-  const [showResume, setShowResume] = useState(false);
+    <!-- Custom Config for Tailwind to handle Dark Mode -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        teal: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            400: '#2dd4bf',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            900: '#134e4a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 
-  // Toggle Dark Mode
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [darkMode]);
+    <style>
+        /* Print Styles for Resume */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #resume-modal, #resume-modal * {
+                visibility: visible;
+            }
+            #resume-modal {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                background: white;
+                color: black;
+            }
+            /* Hide close button and print button during print */
+            #resume-controls {
+                display: none !important;
+            }
+            /* Reset dark mode colors for print */
+            .dark #resume-content {
+                background-color: white !important;
+                color: black !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 transition-colors duration-300 dark:bg-slate-900 dark:text-slate-100">
 
-  const toggleTheme = () => {
-    setDarkMode(!darkMode);
-  };
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-white/90 border-b border-gray-200 backdrop-blur-sm dark:bg-slate-900/90 dark:border-slate-700 transition-colors duration-300">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex-shrink-0 font-bold text-xl tracking-tighter text-teal-600 dark:text-teal-400 cursor-pointer" onclick="document.getElementById('home').scrollIntoView()">
+                    AKS<span class="text-gray-500 dark:text-gray-400">.Data</span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8">
+                    <a href="#about" class="text-sm font-medium text-gray-600 hover:text-teal-600 dark:text-gray-300 dark:hover:text-teal-400 transition-colors">About</a>
+                    <a href="#skills" class="text-sm font-medium text-gray-600 hover:text-teal-600 dark:text-gray-300 dark:hover:text-teal-400 transition-colors">Skills</a>
+                    <a href="#experience" class="text-sm font-medium text-gray-600 hover:text-teal-600 dark:text-gray-300 dark:hover:text-teal-400 transition-colors">Experience</a>
+                    <a href="#projects" class="text-sm font-medium text-gray-600 hover:text-teal-600 dark:text-gray-300 dark:hover:text-teal-400 transition-colors">Projects</a>
+                    <a href="#dashboard" class="text-sm font-medium text-gray-600 hover:text-teal-600 dark:text-gray-300 dark:hover:text-teal-400 transition-colors">Dashboard</a>
+                </div>
 
-  const scrollToSection = (id) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      setActiveSection(id);
-    }
-  };
-
-  // Helper to parse certification string
-  const getCertDetails = (certString) => {
-    // Regex to match "Title (Provider)"
-    const match = certString.match(/^(.*?)\s*\((.*?)\)$/);
-    if (match) {
-      return { title: match[1], provider: match[2] };
-    }
-    return { title: certString, provider: "Certification" };
-  };
-
-  // Data Objects
-  const profile = {
-    name: "Ayush Kumar Sahu",
-    role: "Data Analyst | Data Engineer | M.Sc. Big Data Science",
-    location: "London, UK",
-    email: "ayushkusahuk@gmail.com",
-    website: "https://ayushes.live/",
-    linkedin: "https://www.linkedin.com/in/ayush-ku-sahu/",
-    github: "https://github.com/EAZY-647?tab=repositories"
-  };
-
-  const aboutMeText = "I am a results-driven Data professional with a strong foundation in both Data Engineering and Analytics. With a Master's in Big Data Science and hands-on experience in building real-time pipelines and predictive models, I bridge the gap between complex data infrastructure and actionable business insights. My passion lies in solving difficult problems using modern cloud technologies and scalable architectures.";
-
-  const skills = [
-    { category: "Data Engineering", icon: <Database size={20} />, items: ["Apache Spark (PySpark)", "Kafka", "Hadoop", "Airflow", "dbt", "Snowflake", "Databricks"] },
-    { category: "Data Analysis", icon: <BarChart size={20} />, items: ["Power BI (DAX)", "Tableau", "Advanced Excel", "Google Analytics", "A/B Testing"] },
-    { category: "Cloud Services", icon: <Cloud size={20} />, items: ["AWS (S3, EC2, Lambda, Glue, Redshift)", "Azure (Data Factory)", "GCP"] },
-    { category: "Programming", icon: <Code size={20} />, items: ["Python (Pandas, NumPy, Scikit-learn)", "SQL (Advanced)", "Java", "Scala", "Shell Scripting"] },
-    { category: "DevOps", icon: <Server size={20} />, items: ["Docker", "Kubernetes", "Git", "CI/CD (Jenkins)", "Terraform"] },
-  ];
-
-  const experience = [
-    {
-      company: "Corizo",
-      role: "Data Analyst Intern",
-      period: "Sep 2023 – Jan 2024",
-      type: "Remote",
-      desc: "Focused on SQL, Excel, and Power BI.",
-      achievement: "Drove 10% improvement in operational decision-making efficiency."
-    },
-    {
-      company: "Rubixe",
-      role: "Data Science Intern",
-      period: "Apr 2023 – Jul 2023",
-      type: "On-site",
-      desc: "Focused on ML models using Scikit-learn and Python.",
-      achievement: "Enhanced predictive accuracy by 20% for inventory forecasting."
-    },
-    {
-      company: "Prodevans",
-      role: "DevOps Intern",
-      period: "Jan 2022 – Jul 2022",
-      type: "Remote",
-      desc: "Focused on AWS, Linux automation, and Docker.",
-      achievement: "Reduced deployment times by 40% using CI/CD."
-    }
-  ];
-
-  const projects = [
-    {
-      title: "End-to-End Stock Market Data Pipeline",
-      stack: ["Power BI", "Kafka", "Snowflake", "dbt", "Airflow", "AWS S3", "Python"],
-      desc: "Engineered a real-time data pipeline for financial data ingestion and reporting using modern ELT transformations.",
-      link: "https://www.linkedin.com/posts/ayush-ku-sahu_dataengineering-apachekafka-snowflake-activity-7402961976290869248-kDjR?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ"
-    },
-    {
-      title: "Vendor Performance Data Analytics",
-      stack: ["Python", "Pandas", "SciPy", "SQL", "Power BI", "Stats"],
-      desc: "Conducted advanced statistical analysis and hypothesis testing to optimize supply chain costs and vendor strategy.",
-      link: "https://www.linkedin.com/posts/ayush-ku-sahu_vendor-data-analysis-i-recently-completed-activity-7396481664593362944-YkX5?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ"
-    },
-    {
-      title: "Business Intelligence Dashboard",
-      stack: ["Power BI", "Business Intelligence", "Data Analytics"],
-      desc: "Developed comprehensive BI dashboards for actionable business insights and performance tracking.",
-      link: "https://www.linkedin.com/posts/ayush-ku-sahu_dataanalytics-powerbi-businessintelligence-activity-7400807941794365440-6KlT?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ"
-    },
-    {
-      title: "Telecom Strategy Analytics",
-      stack: ["Power BI", "Power Query", "Telecom Strategy"],
-      desc: "Strategic analysis of telecom data using Power Query and Power BI to identify key growth areas.",
-      link: "https://www.linkedin.com/posts/ayush-ku-sahu_dataanalytics-telecomstrategy-powerquery-activity-7398515931225812992-oFvI?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ"
-    },
-    {
-      title: "E-Commerce Inventory Analytics",
-      stack: ["Python", "Data Analysis", "Inventory Management"],
-      desc: "Analyzed e-commerce inventory data to optimize stock levels and reduce holding costs.",
-      link: "https://github.com/EAZY-647/E-Commerce-Inventory-Analytics"
-    },
-    {
-      title: "Customer Shopping Analysis",
-      stack: ["Python", "Pandas", "Customer Behavior"],
-      desc: "In-depth analysis of customer shopping patterns to drive marketing strategies.",
-      link: "https://github.com/EAZY-647/customer_shopping_anlyasis"
-    },
-    {
-      title: "HealthEdgeAI",
-      stack: ["AI/ML", "Python", "Healthcare"],
-      desc: "AI-driven solution focused on healthcare data analysis and predictive modeling.",
-      link: "https://github.com/EAZY-647/healthedgeai"
-    }
-  ];
-
-  const education = [
-    {
-      school: "Queen Mary University of London",
-      degree: "M.Sc. in Big Data Science (Distinction)",
-      year: "2024-2025"
-    },
-    {
-      school: "SRM IST Chennai",
-      degree: "B.Tech in Electronics & Communication Engineering",
-      year: "2019-2023"
-    }
-  ];
-
-  const certifications = [
-    "Complete Data Engineering With Azure - Basic To Advance (Grow Data Skills)",
-    "SQL Associate (DataCamp)",
-    "Artificial Intelligence & Machine Learning (upGrad Campus)",
-    "Data Science & Machine Learning Complete Course (Coding Ninjas)",
-    "Python Foundation with Data Structures (CareerLabs)",
-    "Get Job Ready: Power BI Data Analytics for All Levels 3.0 (Codebasics)",
-    "Google Cloud and Networking for AWS Professionals (Coursera)",
-    "Google Data Analytics Specialization (Google)",
-    "RHCSA & RHCE, Python, AWS, Docker, Kubernetes (COSS)",
-    "Data Science & Analytics (upGrad Campus)",
-    "Introduction to Python (Coding Ninjas)",
-    "Data science and machine learning bootcamp with R (Udemy)",
-    "Excel: Mother of Business Intelligence (Codebasics)"
-  ];
-
-  // Resume Modal Component
-  const ResumeModal = () => (
-    <div className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 print:p-0 print:bg-white print:fixed print:inset-0">
-      <div className="bg-white text-gray-900 w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-xl shadow-2xl print:w-full print:max-w-none print:max-h-none print:rounded-none print:shadow-none">
-        
-        {/* Modal Header - Hidden in Print */}
-        <div className="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center print:hidden z-10">
-          <h2 className="text-lg font-semibold">Resume Preview</h2>
-          <div className="flex space-x-3">
-            <button 
-              onClick={() => window.print()} 
-              className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-            >
-              <Printer size={18} className="mr-2" /> Print / Save as PDF
-            </button>
-            <button 
-              onClick={() => setShowResume(false)}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-            >
-              <X size={20} />
-            </button>
-          </div>
+                <!-- Icons (Dark Mode & Resume) -->
+                <div class="flex items-center space-x-4">
+                    <button id="theme-toggle" class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-slate-800 dark:text-yellow-400 dark:hover:bg-slate-700 transition-colors">
+                        <i data-lucide="moon" class="dark:hidden"></i>
+                        <i data-lucide="sun" class="hidden dark:block"></i>
+                    </button>
+                    <button onclick="toggleResume(true)" class="hidden sm:flex items-center px-4 py-2 text-sm font-medium text-white bg-teal-600 rounded-md hover:bg-teal-700 transition-colors">
+                        <i data-lucide="download" class="w-4 h-4 mr-2"></i>
+                        Resume
+                    </button>
+                </div>
+            </div>
         </div>
+    </nav>
 
-        {/* Resume Content */}
-        <div className="p-8 md:p-12 print:p-0 print:m-8 text-left">
-          {/* Header */}
-          <div className="border-b-2 border-gray-800 pb-6 mb-6">
-            <h1 className="text-4xl font-bold uppercase tracking-wide mb-2 text-gray-900">{profile.name}</h1>
-            <p className="text-lg font-medium text-gray-700 mb-2">{profile.role}</p>
-            <div className="flex flex-wrap gap-x-4 text-sm text-gray-600">
-              <span className="flex items-center"><Mail size={14} className="mr-1" /> {profile.email}</span>
-              <span className="flex items-center"><MapPin size={14} className="mr-1" /> {profile.location}</span>
+    <!-- Hero Section -->
+    <section id="home" class="pt-32 pb-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto flex flex-col md:flex-row items-center">
+        <div class="md:w-3/5 text-center md:text-left">
+            <div class="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider text-teal-600 uppercase bg-teal-100 rounded-full dark:bg-teal-900/30 dark:text-teal-400">
+                Available for Opportunities
             </div>
-            <div className="flex gap-x-4 mt-2 text-sm text-blue-700 font-medium">
-              <a href={profile.linkedin} className="hover:underline">LinkedIn</a>
-              <a href={profile.github} className="hover:underline">GitHub</a>
-              <a href={profile.website} className="hover:underline">Portfolio</a>
-            </div>
-          </div>
-
-          {/* Technical Skills */}
-          <div className="mb-6">
-            <h2 className="text-xl font-bold uppercase border-b border-gray-300 mb-3 text-gray-800">Technical Skills</h2>
-            <div className="space-y-2 text-sm">
-              <div className="grid grid-cols-12 gap-2">
-                <span className="col-span-12 md:col-span-3 font-bold text-gray-800">Data Engineering:</span>
-                <span className="col-span-12 md:col-span-9 text-gray-700">Apache Spark (PySpark), Kafka, Hadoop, Airflow, dbt, Snowflake, Databricks</span>
-              </div>
-              <div className="grid grid-cols-12 gap-2">
-                <span className="col-span-12 md:col-span-3 font-bold text-gray-800">Analysis & Viz:</span>
-                <span className="col-span-12 md:col-span-9 text-gray-700">Power BI (DAX), Tableau, Advanced Excel, Google Analytics, A/B Testing</span>
-              </div>
-              <div className="grid grid-cols-12 gap-2">
-                <span className="col-span-12 md:col-span-3 font-bold text-gray-800">Cloud Platforms:</span>
-                <span className="col-span-12 md:col-span-9 text-gray-700">AWS (S3, EC2, Lambda, Glue, Redshift), Azure (Data Factory), GCP</span>
-              </div>
-              <div className="grid grid-cols-12 gap-2">
-                <span className="col-span-12 md:col-span-3 font-bold text-gray-800">Programming:</span>
-                <span className="col-span-12 md:col-span-9 text-gray-700">Python (Pandas, NumPy), SQL, Java, Scala, Shell Scripting</span>
-              </div>
-              <div className="grid grid-cols-12 gap-2">
-                <span className="col-span-12 md:col-span-3 font-bold text-gray-800">DevOps:</span>
-                <span className="col-span-12 md:col-span-9 text-gray-700">Docker, Kubernetes, Git, Jenkins, Terraform, PostgreSQL, MongoDB</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Professional Experience */}
-          <div className="mb-6">
-            <h2 className="text-xl font-bold uppercase border-b border-gray-300 mb-4 text-gray-800">Professional Experience</h2>
-            <div className="space-y-6">
-              {experience.map((exp, idx) => (
-                <div key={idx}>
-                  <div className="flex justify-between items-baseline mb-1">
-                    <h3 className="text-lg font-bold text-gray-900">{exp.role}</h3>
-                    <span className="text-sm font-semibold text-gray-600">{exp.period}</span>
-                  </div>
-                  <div className="text-md font-semibold text-gray-700 mb-2">
-                    {exp.company} | {exp.type}
-                  </div>
-                  <ul className="list-disc list-outside ml-4 text-sm text-gray-700 space-y-1">
-                     <li>{exp.desc}</li>
-                     <li><strong>Key Achievement:</strong> {exp.achievement}</li>
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </div>
-
-           {/* Projects */}
-           <div className="mb-6">
-            <h2 className="text-xl font-bold uppercase border-b border-gray-300 mb-4 text-gray-800">Featured Projects</h2>
-            <div className="space-y-4">
-              {projects.slice(0, 3).map((proj, idx) => (
-                <div key={idx}>
-                  <div className="flex justify-between items-baseline">
-                    <h3 className="text-md font-bold text-gray-900">{proj.title}</h3>
-                  </div>
-                  <p className="text-sm text-gray-700 italic mb-1">Stack: {proj.stack.slice(0, 5).join(", ")}</p>
-                  <p className="text-sm text-gray-700">{proj.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Education */}
-          <div className="mb-6">
-            <h2 className="text-xl font-bold uppercase border-b border-gray-300 mb-4 text-gray-800">Education</h2>
-            <div className="space-y-4">
-              {education.map((edu, idx) => (
-                <div key={idx}>
-                  <div className="flex justify-between items-baseline">
-                    <h3 className="text-md font-bold text-gray-900">{edu.school}</h3>
-                    <span className="text-sm font-semibold text-gray-600">{edu.year}</span>
-                  </div>
-                  <p className="text-sm text-gray-700">{edu.degree}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Certifications (Added to Resume Modal) */}
-          <div className="mb-6">
-            <h2 className="text-xl font-bold uppercase border-b border-gray-300 mb-4 text-gray-800">Certifications</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 text-sm text-gray-700">
-              {certifications.map((cert, idx) => (
-                <div key={idx} className="flex items-start">
-                  <span className="mr-2 text-gray-500">•</span>
-                  <span>{cert}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-  );
-
-  return (
-    <div className={`min-h-screen transition-colors duration-300 ${darkMode ? 'bg-slate-900 text-slate-100' : 'bg-gray-50 text-gray-900'}`}>
-      
-      {/* Navigation */}
-      <nav className={`fixed w-full z-50 transition-colors duration-300 ${darkMode ? 'bg-slate-900/90 border-b border-slate-700' : 'bg-white/90 border-b border-gray-200'} backdrop-blur-sm`}>
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex-shrink-0 font-bold text-xl tracking-tighter text-teal-600 dark:text-teal-400 cursor-pointer" onClick={() => scrollToSection('home')}>
-              AKS<span className="text-gray-500 dark:text-gray-400">.Data</span>
-            </div>
-            
-            <div className="hidden md:flex space-x-8">
-              {['About', 'Skills', 'Experience', 'Projects', 'Dashboard'].map((item) => (
-                <button 
-                  key={item}
-                  onClick={() => scrollToSection(item.toLowerCase())}
-                  className={`text-sm font-medium transition-colors hover:text-teal-600 dark:hover:text-teal-400 ${activeSection === item.toLowerCase() ? 'text-teal-600 dark:text-teal-400' : 'text-gray-600 dark:text-gray-300'}`}
-                >
-                  {item}
-                </button>
-              ))}
-            </div>
-
-            <div className="flex items-center space-x-4">
-              <button 
-                onClick={toggleTheme} 
-                className={`p-2 rounded-full transition-colors ${darkMode ? 'bg-slate-800 text-yellow-400 hover:bg-slate-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
-                aria-label="Toggle Dark Mode"
-              >
-                {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-              </button>
-              <button 
-                onClick={() => setShowResume(true)}
-                className="hidden sm:flex items-center px-4 py-2 text-sm font-medium text-white bg-teal-600 rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-colors"
-              >
-                <Download size={16} className="mr-2" />
-                Resume
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      {/* Hero Section */}
-      <section id="home" className="pt-32 pb-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto flex flex-col md:flex-row items-center">
-        <div className="md:w-3/5 text-center md:text-left">
-          <div className="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider text-teal-600 uppercase bg-teal-100 rounded-full dark:bg-teal-900/30 dark:text-teal-400">
-            Available for Opportunities
-          </div>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight mb-6">
-            Hi, I'm <span className="text-teal-600 dark:text-teal-400">{profile.name}</span>
-          </h1>
-          <p className="text-xl sm:text-2xl text-gray-600 dark:text-gray-300 mb-8 font-light">
-            Turning raw data into actionable insights. <br className="hidden md:block"/>
-            Specialized in <span className="font-semibold text-teal-600 dark:text-teal-400">Data Engineering</span> & <span className="font-semibold text-teal-600 dark:text-teal-400">Big Data Science</span>.
-          </p>
-          
-          <div className="flex flex-wrap justify-center md:justify-start gap-4 mb-8">
-            <a href={`mailto:${profile.email}`} className="px-6 py-3 text-base font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700 transition-all shadow-lg hover:shadow-xl flex items-center">
-              <Mail size={18} className="mr-2" /> Contact Me
-            </a>
-            <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className={`px-6 py-3 text-base font-medium rounded-lg border transition-all flex items-center ${darkMode ? 'border-slate-600 hover:bg-slate-800' : 'border-gray-300 hover:bg-gray-100'}`}>
-              <Linkedin size={18} className="mr-2" /> LinkedIn
-            </a>
-            <a href={profile.github} target="_blank" rel="noopener noreferrer" className={`px-6 py-3 text-base font-medium rounded-lg border transition-all flex items-center ${darkMode ? 'border-slate-600 hover:bg-slate-800' : 'border-gray-300 hover:bg-gray-100'}`}>
-              <Github size={18} className="mr-2" /> GitHub
-            </a>
-          </div>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start space-y-2 sm:space-y-0 sm:space-x-6 text-sm text-gray-500 dark:text-gray-400">
-            <div className="flex items-center"><MapPin size={16} className="mr-1" /> {profile.location}</div>
-          </div>
-        </div>
-        
-        {/* Abstract Data Visual / Image Placeholder */}
-        <div className="md:w-2/5 mt-12 md:mt-0 flex justify-center">
-          <div className={`relative w-64 h-64 sm:w-80 sm:h-80 rounded-full flex items-center justify-center border-4 ${darkMode ? 'border-teal-500/20 bg-slate-800' : 'border-teal-100 bg-white shadow-xl'}`}>
-             <div className="absolute inset-0 rounded-full animate-pulse opacity-20 bg-teal-500 blur-2xl"></div>
-             <div className="text-center z-10">
-                <Database size={64} className="mx-auto text-teal-600 dark:text-teal-400 mb-4" />
-                <div className="font-mono text-xs text-gray-400">
-                  SELECT * FROM<br/>SUCCESS<br/>WHERE HARDWORK = TRUE;
-                </div>
-             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* About Me Details Section */}
-      <section id="about" className={`py-12 px-4 sm:px-6 lg:px-8 border-t ${darkMode ? 'bg-slate-800/30 border-slate-800' : 'bg-gray-50/50 border-gray-100'}`}>
-        <div className="max-w-4xl mx-auto">
-          <div className="flex flex-col md:flex-row items-start gap-8">
-            <div className={`p-4 rounded-full ${darkMode ? 'bg-slate-700 text-teal-400' : 'bg-teal-50 text-teal-600'}`}>
-              <User size={32} />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold mb-4">About Me</h2>
-              <p className={`text-lg leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                {aboutMeText}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Skills Section */}
-      <section id="skills" className={`py-20 px-4 sm:px-6 lg:px-8 ${darkMode ? 'bg-slate-900' : 'bg-white'}`}>
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold mb-12 text-center">Technical Expertise</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {skills.map((skillGroup, idx) => (
-              <div key={idx} className={`p-6 rounded-xl border transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${darkMode ? 'bg-slate-900 border-slate-700' : 'bg-gray-50 border-gray-100'}`}>
-                <div className="flex items-center mb-4 text-teal-600 dark:text-teal-400">
-                  {skillGroup.icon}
-                  <h3 className="ml-2 font-bold text-lg">{skillGroup.category}</h3>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {skillGroup.items.map((skill, sIdx) => (
-                    <span key={sIdx} className={`px-3 py-1 text-xs font-medium rounded-full ${darkMode ? 'bg-slate-800 text-teal-300' : 'bg-white text-teal-700 border border-gray-200 shadow-sm'}`}>
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* GitHub Activity Graph - ADDED */}
-          <div className="mt-16 text-center">
-            <h3 className="text-xl font-bold mb-6 flex items-center justify-center">
-              <GitCommit className="mr-2 text-teal-600" />
-              Coding Activity (GitHub)
-            </h3>
-            <div className="overflow-x-auto flex justify-center pb-4">
-              <img 
-                src="https://ghchart.rshah.org/14b8a6/EAZY-647" 
-                alt="Ayush's Github Chart" 
-                className="rounded-lg border p-2 bg-white"
-              />
-            </div>
-            <p className="text-sm text-gray-500 mt-2">
-              Real-time visualization of my code contributions over the last year.
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight mb-6">
+                Hi, I'm <span class="text-teal-600 dark:text-teal-400">Ayush Kumar Sahu</span>
+            </h1>
+            <p class="text-xl sm:text-2xl text-gray-600 dark:text-gray-300 mb-8 font-light">
+                Turning raw data into actionable insights. <br class="hidden md:block"/>
+                Specialized in <span class="font-semibold text-teal-600 dark:text-teal-400">Data Engineering</span> & <span class="font-semibold text-teal-600 dark:text-teal-400">Big Data Science</span>.
             </p>
-          </div>
-
-        </div>
-      </section>
-
-      {/* Experience */}
-      <section id="experience" className="py-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
-        <h2 className="text-3xl font-bold mb-12 text-center">Professional Experience</h2>
-        
-        <div className="relative border-l-2 border-teal-200 dark:border-teal-900 ml-4 md:ml-0 space-y-12">
-          {experience.map((exp, idx) => (
-            <div key={idx} className="relative pl-8 md:pl-0">
-              {/* Timeline Dot */}
-              <div className="absolute top-0 left-[-9px] w-4 h-4 rounded-full bg-teal-600 border-4 border-white dark:border-slate-900"></div>
-              
-              <div className="md:grid md:grid-cols-12 md:gap-8">
-                {/* Date Side */}
-                <div className="md:col-span-3 mb-2 md:mb-0 md:text-right">
-                  <span className="inline-block px-2 py-1 text-xs font-semibold rounded bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-300">
-                    {exp.period}
-                  </span>
-                </div>
-                
-                {/* Content Side */}
-                <div className="md:col-span-9">
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">{exp.role}</h3>
-                  <div className="text-lg font-medium text-teal-600 dark:text-teal-400 mb-2">
-                    {exp.company} <span className="text-sm text-gray-500 dark:text-gray-400 font-normal">| {exp.type}</span>
-                  </div>
-                  <p className="text-gray-600 dark:text-gray-300 mb-2">{exp.desc}</p>
-                  <div className="flex items-start mt-2 text-sm text-gray-500 dark:text-gray-400">
-                    <span className="mr-2 text-teal-500">▹</span>
-                    <span>Key Achievement: {exp.achievement}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Projects */}
-      <section id="projects" className={`py-20 px-4 sm:px-6 lg:px-8 ${darkMode ? 'bg-slate-800/50' : 'bg-white'}`}>
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold mb-12 text-center">Featured Projects</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {projects.map((project, idx) => (
-              <div key={idx} className={`group relative p-8 rounded-2xl border transition-all duration-300 hover:shadow-2xl ${darkMode ? 'bg-slate-900 border-slate-700 hover:border-teal-700' : 'bg-gray-50 border-gray-100 hover:border-teal-200'}`}>
-                <div className="absolute top-6 right-6 p-2 rounded-full bg-teal-50 dark:bg-slate-800 text-teal-600 dark:text-teal-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <ExternalLink size={20} />
-                </div>
-                
-                <h3 className="text-2xl font-bold mb-3 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
-                  {project.title}
-                </h3>
-                
-                <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
-                  {project.desc}
-                </p>
-                
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {project.stack.map((tech, tIdx) => (
-                    <span key={tIdx} className="text-xs font-mono text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-slate-800 px-2 py-1 rounded">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-
-                <a href={project.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-sm font-semibold text-teal-600 dark:text-teal-400 hover:underline">
-                  View Project Details &rarr;
+            
+            <!-- Social Links -->
+            <div class="flex flex-wrap justify-center md:justify-start gap-4 mb-8">
+                <a href="mailto:ayushkusahuk@gmail.com" class="px-6 py-3 text-base font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700 transition-all shadow-lg hover:shadow-xl flex items-center">
+                    <i data-lucide="mail" class="w-5 h-5 mr-2"></i> Contact Me
                 </a>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+                <a href="https://www.linkedin.com/in/ayush-ku-sahu/" target="_blank" class="px-6 py-3 text-base font-medium rounded-lg border border-gray-300 hover:bg-gray-100 dark:border-slate-600 dark:hover:bg-slate-800 transition-all flex items-center">
+                    <i data-lucide="linkedin" class="w-5 h-5 mr-2"></i> LinkedIn
+                </a>
+                <a href="https://github.com/EAZY-647?tab=repositories" target="_blank" class="px-6 py-3 text-base font-medium rounded-lg border border-gray-300 hover:bg-gray-100 dark:border-slate-600 dark:hover:bg-slate-800 transition-all flex items-center">
+                    <i data-lucide="github" class="w-5 h-5 mr-2"></i> GitHub
+                </a>
+            </div>
 
-      {/* Live Dashboard Section */}
-      <section id="dashboard" className={`py-20 px-4 sm:px-6 lg:px-8 ${darkMode ? 'bg-slate-800/30' : 'bg-gray-50'}`}>
-        <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-10">
-                <span className="inline-block p-3 rounded-full bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 mb-4">
-                    <MonitorPlay size={24} />
-                </span>
-                <h2 className="text-3xl font-bold mb-4">Live Interactive Dashboard</h2>
-                <p className={`max-w-2xl mx-auto ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                Experience the power of data visualization. Interact with this live Power BI report to see how I transform raw data into actionable insights.
-                </p>
-            </div>
-            
-            <div className="relative w-full overflow-hidden rounded-xl shadow-2xl border border-gray-200 dark:border-slate-700 aspect-video md:aspect-[16/9] lg:h-[600px] bg-gray-100 dark:bg-slate-800">
-                <iframe 
-                    title="Power BI Dashboard"
-                    width="100%" 
-                    height="100%" 
-                    src="https://app.powerbi.com/view?r=eyJrIjoiYTIxMzRlM2QtODI0OC00Yzc0LTk5N2ItZTNiNDgzNGY0Y2NjIiwidCI6ImM2ZTU0OWIzLTVmNDUtNDAzMi1hYWU5LWQ0MjQ0ZGM1YjJjNCJ9" 
-                    frameBorder="0" 
-                    allowFullScreen={true}
-                    className="absolute inset-0"
-                ></iframe>
-            </div>
-            
-            <div className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
-                <p>Note: Interactivity is enabled. Click on charts and filters to explore the data.</p>
+            <div class="flex flex-col sm:flex-row items-center justify-center md:justify-start space-y-2 sm:space-y-0 sm:space-x-6 text-sm text-gray-500 dark:text-gray-400">
+                <div class="flex items-center"><i data-lucide="map-pin" class="w-4 h-4 mr-1"></i> London, UK</div>
             </div>
         </div>
-      </section>
-
-      {/* Education & Certs */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
-        <div className="flex flex-col gap-12">
-          
-          {/* Education */}
-          <div>
-            <h2 className="text-2xl font-bold mb-8 flex items-center">
-              <span className="w-8 h-1 bg-teal-500 mr-3 rounded-full"></span> Education
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {education.map((edu, idx) => (
-                <div key={idx} className={`p-6 rounded-xl border transition-all hover:border-teal-400 ${darkMode ? 'bg-slate-900 border-slate-700' : 'bg-white border-gray-100 shadow-sm'}`}>
-                  <div className="flex items-start justify-between mb-4">
-                    <h3 className="text-lg font-bold pr-4">{edu.school}</h3>
-                    <span className="text-xs font-medium px-2 py-1 bg-teal-100 dark:bg-teal-900 text-teal-800 dark:text-teal-200 rounded whitespace-nowrap">{edu.year}</span>
-                  </div>
-                  <p className="text-teal-600 dark:text-teal-400 font-medium">{edu.degree}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Certifications - Grid Layout */}
-          <div>
-            <h2 className="text-2xl font-bold mb-8 flex items-center">
-              <span className="w-8 h-1 bg-teal-500 mr-3 rounded-full"></span> Certifications
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {certifications.map((certString, idx) => {
-                const { title, provider } = getCertDetails(certString);
-                return (
-                  <div key={idx} className={`group relative p-6 rounded-xl border transition-all duration-300 hover:shadow-lg hover:-translate-y-1 overflow-hidden ${darkMode ? 'bg-slate-900 border-slate-700 hover:border-teal-600/50' : 'bg-white border-gray-100 shadow-sm hover:border-teal-200'}`}>
-                    {/* Decorative Background Gradient on Hover */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-teal-50/0 to-teal-50/50 dark:from-teal-900/0 dark:to-teal-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    
-                    <div className="relative flex items-start space-x-4">
-                      <div className={`flex-shrink-0 p-3 rounded-lg ${darkMode ? 'bg-slate-800 text-yellow-500' : 'bg-yellow-50 text-yellow-600'}`}>
-                        <Award size={24} />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-2 leading-tight group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
-                          {title}
-                        </h3>
-                        <span className="inline-flex items-center text-xs font-medium text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-slate-800 px-2 py-1 rounded">
-                          {provider}
-                        </span>
-                      </div>
+        
+        <!-- Animated Icon Placeholder -->
+        <div class="md:w-2/5 mt-12 md:mt-0 flex justify-center">
+            <div class="relative w-64 h-64 sm:w-80 sm:h-80 rounded-full flex items-center justify-center border-4 border-teal-100 bg-white shadow-xl dark:border-teal-500/20 dark:bg-slate-800">
+                <div class="absolute inset-0 rounded-full animate-pulse opacity-20 bg-teal-500 blur-2xl"></div>
+                <div class="text-center z-10">
+                    <i data-lucide="database" class="mx-auto w-16 h-16 text-teal-600 dark:text-teal-400 mb-4"></i>
+                    <div class="font-mono text-xs text-gray-400">
+                        SELECT * FROM<br/>SUCCESS<br/>WHERE HARDWORK = TRUE;
                     </div>
-                  </div>
-                );
-              })}
+                </div>
             </div>
-          </div>
         </div>
-      </section>
+    </section>
 
-      {/* Footer */}
-      <footer className={`py-12 border-t ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-gray-50 border-gray-200'}`}>
-        <div className="max-w-6xl mx-auto px-4 text-center">
-          <h2 className="text-2xl font-bold mb-6">Let's Connect</h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
-            I am currently open to full-time opportunities in Data Engineering and Analytics.
-            Feel free to reach out to discuss how I can contribute to your team.
-          </p>
-          
-          <div className="flex justify-center space-x-6 mb-8">
-            <a href={`mailto:${profile.email}`} className="text-gray-400 hover:text-teal-600 transition-colors">
-              <Mail size={24} />
-            </a>
-            <a href={profile.linkedin} className="text-gray-400 hover:text-teal-600 transition-colors">
-              <Linkedin size={24} />
-            </a>
-            <a href={profile.github} className="text-gray-400 hover:text-teal-600 transition-colors">
-              <Github size={24} />
-            </a>
-            <a href={profile.website} className="text-gray-400 hover:text-teal-600 transition-colors">
-              <ExternalLink size={24} />
-            </a>
-          </div>
-
-          <p className="text-sm text-gray-500">
-            © {new Date().getFullYear()} Ayush Kumar Sahu. Built with React & Tailwind CSS.
-          </p>
+    <!-- About Me -->
+    <section id="about" class="py-12 px-4 sm:px-6 lg:px-8 border-t border-gray-100 bg-gray-50/50 dark:bg-slate-800/30 dark:border-slate-800">
+        <div class="max-w-4xl mx-auto">
+            <div class="flex flex-col md:flex-row items-start gap-8">
+                <div class="p-4 rounded-full bg-teal-50 text-teal-600 dark:bg-slate-700 dark:text-teal-400">
+                    <i data-lucide="user" class="w-8 h-8"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold mb-4">About Me</h2>
+                    <p class="text-lg leading-relaxed text-gray-600 dark:text-gray-300">
+                        I am a results-driven Data professional with a strong foundation in both Data Engineering and Analytics. With a Master's in Big Data Science and hands-on experience in building real-time pipelines and predictive models, I bridge the gap between complex data infrastructure and actionable business insights. My passion lies in solving difficult problems using modern cloud technologies and scalable architectures.
+                    </p>
+                </div>
+            </div>
         </div>
-      </footer>
+    </section>
 
-      {/* Mobile Sticky Button */}
-      <div className="sm:hidden fixed bottom-6 right-6 z-50">
-        <button 
-          onClick={() => setShowResume(true)}
-          className="flex items-center justify-center w-14 h-14 rounded-full bg-teal-600 text-white shadow-lg hover:bg-teal-700 focus:outline-none"
-        >
-          <Download size={24} />
-        </button>
-      </div>
+    <!-- Skills -->
+    <section id="skills" class="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-slate-900">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl font-bold mb-12 text-center">Technical Expertise</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Skill Card 1 -->
+                <div class="p-6 rounded-xl border border-gray-100 bg-gray-50 hover:shadow-lg transition-all dark:bg-slate-900 dark:border-slate-700">
+                    <div class="flex items-center mb-4 text-teal-600 dark:text-teal-400">
+                        <i data-lucide="database" class="w-5 h-5 mr-2"></i>
+                        <h3 class="font-bold text-lg">Data Engineering</h3>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-tag">Apache Spark (PySpark)</span>
+                        <span class="skill-tag">Kafka</span>
+                        <span class="skill-tag">Hadoop</span>
+                        <span class="skill-tag">Airflow</span>
+                        <span class="skill-tag">dbt</span>
+                        <span class="skill-tag">Snowflake</span>
+                        <span class="skill-tag">Databricks</span>
+                    </div>
+                </div>
 
-      {/* Resume Modal */}
-      {showResume && <ResumeModal />}
+                <!-- Skill Card 2 -->
+                <div class="p-6 rounded-xl border border-gray-100 bg-gray-50 hover:shadow-lg transition-all dark:bg-slate-900 dark:border-slate-700">
+                    <div class="flex items-center mb-4 text-teal-600 dark:text-teal-400">
+                        <i data-lucide="bar-chart-3" class="w-5 h-5 mr-2"></i>
+                        <h3 class="font-bold text-lg">Data Analysis</h3>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-tag">Power BI (DAX)</span>
+                        <span class="skill-tag">Tableau</span>
+                        <span class="skill-tag">Advanced Excel</span>
+                        <span class="skill-tag">Google Analytics</span>
+                        <span class="skill-tag">A/B Testing</span>
+                    </div>
+                </div>
 
+                <!-- Skill Card 3 -->
+                <div class="p-6 rounded-xl border border-gray-100 bg-gray-50 hover:shadow-lg transition-all dark:bg-slate-900 dark:border-slate-700">
+                    <div class="flex items-center mb-4 text-teal-600 dark:text-teal-400">
+                        <i data-lucide="cloud" class="w-5 h-5 mr-2"></i>
+                        <h3 class="font-bold text-lg">Cloud Services</h3>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-tag">AWS</span>
+                        <span class="skill-tag">Azure (Data Factory)</span>
+                        <span class="skill-tag">GCP</span>
+                    </div>
+                </div>
+
+                <!-- Skill Card 4 -->
+                <div class="p-6 rounded-xl border border-gray-100 bg-gray-50 hover:shadow-lg transition-all dark:bg-slate-900 dark:border-slate-700">
+                    <div class="flex items-center mb-4 text-teal-600 dark:text-teal-400">
+                        <i data-lucide="code" class="w-5 h-5 mr-2"></i>
+                        <h3 class="font-bold text-lg">Programming</h3>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-tag">Python (Pandas, NumPy)</span>
+                        <span class="skill-tag">SQL (Advanced)</span>
+                        <span class="skill-tag">Java</span>
+                        <span class="skill-tag">Scala</span>
+                        <span class="skill-tag">Shell Scripting</span>
+                    </div>
+                </div>
+
+                <!-- Skill Card 5 -->
+                <div class="p-6 rounded-xl border border-gray-100 bg-gray-50 hover:shadow-lg transition-all dark:bg-slate-900 dark:border-slate-700">
+                    <div class="flex items-center mb-4 text-teal-600 dark:text-teal-400">
+                        <i data-lucide="server" class="w-5 h-5 mr-2"></i>
+                        <h3 class="font-bold text-lg">DevOps</h3>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-tag">Docker</span>
+                        <span class="skill-tag">Kubernetes</span>
+                        <span class="skill-tag">Git</span>
+                        <span class="skill-tag">CI/CD (Jenkins)</span>
+                        <span class="skill-tag">Terraform</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GitHub Chart -->
+            <div class="mt-16 text-center">
+                <h3 class="text-xl font-bold mb-6 flex items-center justify-center">
+                    <i data-lucide="git-commit" class="w-5 h-5 mr-2 text-teal-600"></i>
+                    Coding Activity (GitHub)
+                </h3>
+                <div class="overflow-x-auto flex justify-center pb-4">
+                    <img src="https://ghchart.rshah.org/14b8a6/EAZY-647" alt="Github Chart" class="rounded-lg border p-2 bg-white">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience -->
+    <section id="experience" class="py-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold mb-12 text-center">Professional Experience</h2>
+        <div class="relative border-l-2 border-teal-200 dark:border-teal-900 ml-4 md:ml-0 space-y-12">
+            
+            <!-- Job 1 -->
+            <div class="relative pl-8 md:pl-0">
+                <div class="absolute top-0 left-[-9px] w-4 h-4 rounded-full bg-teal-600 border-4 border-white dark:border-slate-900"></div>
+                <div class="md:grid md:grid-cols-12 md:gap-8">
+                    <div class="md:col-span-3 mb-2 md:mb-0 md:text-right">
+                        <span class="inline-block px-2 py-1 text-xs font-semibold rounded bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-300">Sep 2023 – Jan 2024</span>
+                    </div>
+                    <div class="md:col-span-9">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Data Analyst Intern</h3>
+                        <div class="text-lg font-medium text-teal-600 dark:text-teal-400 mb-2">Corizo | Remote</div>
+                        <p class="text-gray-600 dark:text-gray-300 mb-2">Focused on SQL, Excel, and Power BI.</p>
+                        <div class="flex items-start mt-2 text-sm text-gray-500 dark:text-gray-400">
+                            <span class="mr-2 text-teal-500">▹</span> Key Achievement: Drove 10% improvement in operational decision-making efficiency.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Job 2 -->
+            <div class="relative pl-8 md:pl-0">
+                <div class="absolute top-0 left-[-9px] w-4 h-4 rounded-full bg-teal-600 border-4 border-white dark:border-slate-900"></div>
+                <div class="md:grid md:grid-cols-12 md:gap-8">
+                    <div class="md:col-span-3 mb-2 md:mb-0 md:text-right">
+                        <span class="inline-block px-2 py-1 text-xs font-semibold rounded bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-300">Apr 2023 – Jul 2023</span>
+                    </div>
+                    <div class="md:col-span-9">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Data Science Intern</h3>
+                        <div class="text-lg font-medium text-teal-600 dark:text-teal-400 mb-2">Rubixe | On-site</div>
+                        <p class="text-gray-600 dark:text-gray-300 mb-2">Focused on ML models using Scikit-learn and Python.</p>
+                        <div class="flex items-start mt-2 text-sm text-gray-500 dark:text-gray-400">
+                            <span class="mr-2 text-teal-500">▹</span> Key Achievement: Enhanced predictive accuracy by 20% for inventory forecasting.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Job 3 -->
+            <div class="relative pl-8 md:pl-0">
+                <div class="absolute top-0 left-[-9px] w-4 h-4 rounded-full bg-teal-600 border-4 border-white dark:border-slate-900"></div>
+                <div class="md:grid md:grid-cols-12 md:gap-8">
+                    <div class="md:col-span-3 mb-2 md:mb-0 md:text-right">
+                        <span class="inline-block px-2 py-1 text-xs font-semibold rounded bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-300">Jan 2022 – Jul 2022</span>
+                    </div>
+                    <div class="md:col-span-9">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">DevOps Intern</h3>
+                        <div class="text-lg font-medium text-teal-600 dark:text-teal-400 mb-2">Prodevans | Remote</div>
+                        <p class="text-gray-600 dark:text-gray-300 mb-2">Focused on AWS, Linux automation, and Docker.</p>
+                        <div class="flex items-start mt-2 text-sm text-gray-500 dark:text-gray-400">
+                            <span class="mr-2 text-teal-500">▹</span> Key Achievement: Reduced deployment times by 40% using CI/CD.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects" class="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-slate-900/50">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl font-bold mb-12 text-center">Featured Projects</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- Project 1 -->
+                <div class="group relative p-8 rounded-2xl border border-gray-100 bg-gray-50 hover:border-teal-200 hover:shadow-2xl transition-all duration-300 dark:bg-slate-900 dark:border-slate-700 dark:hover:border-teal-700">
+                    <div class="absolute top-6 right-6 p-2 rounded-full bg-teal-50 text-teal-600 opacity-0 group-hover:opacity-100 transition-opacity dark:bg-slate-800 dark:text-teal-400">
+                        <i data-lucide="external-link" class="w-5 h-5"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 group-hover:text-teal-600 transition-colors dark:group-hover:text-teal-400">End-to-End Stock Market Data Pipeline</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">Engineered a real-time data pipeline for financial data ingestion and reporting using modern ELT transformations.</p>
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        <span class="tech-tag">Power BI</span><span class="tech-tag">Kafka</span><span class="tech-tag">Snowflake</span><span class="tech-tag">Airflow</span>
+                    </div>
+                    <a href="https://www.linkedin.com/posts/ayush-ku-sahu_dataengineering-apachekafka-snowflake-activity-7402961976290869248-kDjR" target="_blank" class="inline-flex items-center text-sm font-semibold text-teal-600 hover:underline dark:text-teal-400">View Project Details &rarr;</a>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="group relative p-8 rounded-2xl border border-gray-100 bg-gray-50 hover:border-teal-200 hover:shadow-2xl transition-all duration-300 dark:bg-slate-900 dark:border-slate-700 dark:hover:border-teal-700">
+                    <div class="absolute top-6 right-6 p-2 rounded-full bg-teal-50 text-teal-600 opacity-0 group-hover:opacity-100 transition-opacity dark:bg-slate-800 dark:text-teal-400">
+                        <i data-lucide="external-link" class="w-5 h-5"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 group-hover:text-teal-600 transition-colors dark:group-hover:text-teal-400">Vendor Performance Data Analytics</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">Conducted advanced statistical analysis and hypothesis testing to optimize supply chain costs and vendor strategy.</p>
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        <span class="tech-tag">Python</span><span class="tech-tag">Pandas</span><span class="tech-tag">SQL</span><span class="tech-tag">Power BI</span>
+                    </div>
+                    <a href="https://www.linkedin.com/posts/ayush-ku-sahu_vendor-data-analysis-i-recently-completed-activity-7396481664593362944-YkX5" target="_blank" class="inline-flex items-center text-sm font-semibold text-teal-600 hover:underline dark:text-teal-400">View Project Details &rarr;</a>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="group relative p-8 rounded-2xl border border-gray-100 bg-gray-50 hover:border-teal-200 hover:shadow-2xl transition-all duration-300 dark:bg-slate-900 dark:border-slate-700 dark:hover:border-teal-700">
+                    <h3 class="text-2xl font-bold mb-3 group-hover:text-teal-600 transition-colors dark:group-hover:text-teal-400">Business Intelligence Dashboard</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-6">Developed comprehensive BI dashboards for actionable business insights and performance tracking.</p>
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        <span class="tech-tag">Power BI</span><span class="tech-tag">DAX</span>
+                    </div>
+                    <a href="https://www.linkedin.com/posts/ayush-ku-sahu_dataanalytics-powerbi-businessintelligence-activity-7400807941794365440-6KlT" target="_blank" class="inline-flex items-center text-sm font-semibold text-teal-600 hover:underline dark:text-teal-400">View Project Details &rarr;</a>
+                </div>
+
+                <!-- Project 4 -->
+                <div class="group relative p-8 rounded-2xl border border-gray-100 bg-gray-50 hover:border-teal-200 hover:shadow-2xl transition-all duration-300 dark:bg-slate-900 dark:border-slate-700 dark:hover:border-teal-700">
+                    <h3 class="text-2xl font-bold mb-3 group-hover:text-teal-600 transition-colors dark:group-hover:text-teal-400">Telecom Strategy Analytics</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-6">Strategic analysis of telecom data using Power Query and Power BI to identify key growth areas.</p>
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        <span class="tech-tag">Power BI</span><span class="tech-tag">Power Query</span>
+                    </div>
+                    <a href="https://www.linkedin.com/posts/ayush-ku-sahu_dataanalytics-telecomstrategy-powerquery-activity-7398515931225812992-oFvI" target="_blank" class="inline-flex items-center text-sm font-semibold text-teal-600 hover:underline dark:text-teal-400">View Project Details &rarr;</a>
+                </div>
+
+                <!-- Project 5 -->
+                <div class="group relative p-8 rounded-2xl border border-gray-100 bg-gray-50 hover:border-teal-200 hover:shadow-2xl transition-all duration-300 dark:bg-slate-900 dark:border-slate-700 dark:hover:border-teal-700">
+                    <h3 class="text-2xl font-bold mb-3 group-hover:text-teal-600 transition-colors dark:group-hover:text-teal-400">E-Commerce Inventory Analytics</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-6">Analyzed e-commerce inventory data to optimize stock levels and reduce holding costs.</p>
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        <span class="tech-tag">Python</span><span class="tech-tag">Data Analysis</span>
+                    </div>
+                    <a href="https://github.com/EAZY-647/E-Commerce-Inventory-Analytics" target="_blank" class="inline-flex items-center text-sm font-semibold text-teal-600 hover:underline dark:text-teal-400">View Project Details &rarr;</a>
+                </div>
+
+                <!-- Project 6 -->
+                <div class="group relative p-8 rounded-2xl border border-gray-100 bg-gray-50 hover:border-teal-200 hover:shadow-2xl transition-all duration-300 dark:bg-slate-900 dark:border-slate-700 dark:hover:border-teal-700">
+                    <h3 class="text-2xl font-bold mb-3 group-hover:text-teal-600 transition-colors dark:group-hover:text-teal-400">Customer Shopping Analysis</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-6">In-depth analysis of customer shopping patterns to drive marketing strategies.</p>
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        <span class="tech-tag">Python</span><span class="tech-tag">Pandas</span>
+                    </div>
+                    <a href="https://github.com/EAZY-647/customer_shopping_anlyasis" target="_blank" class="inline-flex items-center text-sm font-semibold text-teal-600 hover:underline dark:text-teal-400">View Project Details &rarr;</a>
+                </div>
+
+                <!-- Project 7 -->
+                <div class="group relative p-8 rounded-2xl border border-gray-100 bg-gray-50 hover:border-teal-200 hover:shadow-2xl transition-all duration-300 dark:bg-slate-900 dark:border-slate-700 dark:hover:border-teal-700">
+                    <h3 class="text-2xl font-bold mb-3 group-hover:text-teal-600 transition-colors dark:group-hover:text-teal-400">HealthEdgeAI</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-6">AI-driven solution focused on healthcare data analysis and predictive modeling.</p>
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        <span class="tech-tag">AI/ML</span><span class="tech-tag">Python</span>
+                    </div>
+                    <a href="https://github.com/EAZY-647/healthedgeai" target="_blank" class="inline-flex items-center text-sm font-semibold text-teal-600 hover:underline dark:text-teal-400">View Project Details &rarr;</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-slate-800/30">
+        <div class="max-w-6xl mx-auto text-center">
+            <span class="inline-block p-3 rounded-full bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 mb-4">
+                <i data-lucide="monitor-play" class="w-6 h-6"></i>
+            </span>
+            <h2 class="text-3xl font-bold mb-4">Live Interactive Dashboard</h2>
+            <p class="max-w-2xl mx-auto text-gray-600 dark:text-gray-300 mb-10">
+                Experience the power of data visualization. Interact with this live Power BI report to see how I transform raw data into actionable insights.
+            </p>
+            <div class="relative w-full overflow-hidden rounded-xl shadow-2xl border border-gray-200 dark:border-slate-700 aspect-video md:aspect-[16/9] lg:h-[600px] bg-gray-100 dark:bg-slate-800">
+                <iframe title="Power BI Dashboard" width="100%" height="100%" src="https://app.powerbi.com/view?r=eyJrIjoiYTIxMzRlM2QtODI0OC00Yzc0LTk5N2ItZTNiNDgzNGY0Y2NjIiwidCI6ImM2ZTU0OWIzLTVmNDUtNDAzMi1hYWU5LWQ0MjQ0ZGM1YjJjNCJ9" frameborder="0" allowfullscreen="true" class="absolute inset-0"></iframe>
+            </div>
+            <p class="mt-4 text-sm text-gray-500 dark:text-gray-400">Note: Interactivity is enabled. Click on charts and filters to explore the data.</p>
+        </div>
+    </section>
+
+    <!-- Education & Certifications -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+        <div class="flex flex-col gap-12">
+            
+            <!-- Education -->
+            <div>
+                <h2 class="text-2xl font-bold mb-8 flex items-center">
+                    <span class="w-8 h-1 bg-teal-500 mr-3 rounded-full"></span> Education
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="p-6 rounded-xl border border-gray-100 bg-white hover:border-teal-400 transition-all shadow-sm dark:bg-slate-900 dark:border-slate-700">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-lg font-bold pr-4">Queen Mary University of London</h3>
+                            <span class="text-xs font-medium px-2 py-1 bg-teal-100 text-teal-800 rounded dark:bg-teal-900 dark:text-teal-200">2024-2025</span>
+                        </div>
+                        <p class="text-teal-600 dark:text-teal-400 font-medium">M.Sc. in Big Data Science (Distinction)</p>
+                    </div>
+                    <div class="p-6 rounded-xl border border-gray-100 bg-white hover:border-teal-400 transition-all shadow-sm dark:bg-slate-900 dark:border-slate-700">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-lg font-bold pr-4">SRM IST Chennai</h3>
+                            <span class="text-xs font-medium px-2 py-1 bg-teal-100 text-teal-800 rounded dark:bg-teal-900 dark:text-teal-200">2019-2023</span>
+                        </div>
+                        <p class="text-teal-600 dark:text-teal-400 font-medium">B.Tech in Electronics & Communication Engineering</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Certifications -->
+            <div>
+                <h2 class="text-2xl font-bold mb-8 flex items-center">
+                    <span class="w-8 h-1 bg-teal-500 mr-3 rounded-full"></span> Certifications
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="cert-grid">
+                    <!-- Certs will be populated by script mostly, but hardcoded here for "Only HTML" simplicity -->
+                    <!-- Card 1 -->
+                    <div class="group relative p-6 rounded-xl border border-gray-100 bg-white shadow-sm hover:border-teal-200 hover:shadow-lg transition-all dark:bg-slate-900 dark:border-slate-700 dark:hover:border-teal-600/50">
+                        <div class="relative flex items-start space-x-4">
+                            <div class="flex-shrink-0 p-3 rounded-lg bg-yellow-50 text-yellow-600 dark:bg-slate-800 dark:text-yellow-500"><i data-lucide="award" class="w-6 h-6"></i></div>
+                            <div class="flex-1">
+                                <h3 class="text-sm font-bold mb-2 group-hover:text-teal-600 dark:group-hover:text-teal-400">Complete Data Engineering With Azure</h3>
+                                <span class="text-xs font-medium bg-gray-100 px-2 py-1 rounded dark:bg-slate-800 dark:text-gray-400">Grow Data Skills</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="group relative p-6 rounded-xl border border-gray-100 bg-white shadow-sm hover:border-teal-200 hover:shadow-lg transition-all dark:bg-slate-900 dark:border-slate-700 dark:hover:border-teal-600/50">
+                        <div class="relative flex items-start space-x-4">
+                            <div class="flex-shrink-0 p-3 rounded-lg bg-yellow-50 text-yellow-600 dark:bg-slate-800 dark:text-yellow-500"><i data-lucide="award" class="w-6 h-6"></i></div>
+                            <div class="flex-1">
+                                <h3 class="text-sm font-bold mb-2 group-hover:text-teal-600 dark:group-hover:text-teal-400">SQL Associate</h3>
+                                <span class="text-xs font-medium bg-gray-100 px-2 py-1 rounded dark:bg-slate-800 dark:text-gray-400">DataCamp</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="group relative p-6 rounded-xl border border-gray-100 bg-white shadow-sm hover:border-teal-200 hover:shadow-lg transition-all dark:bg-slate-900 dark:border-slate-700 dark:hover:border-teal-600/50">
+                        <div class="relative flex items-start space-x-4">
+                            <div class="flex-shrink-0 p-3 rounded-lg bg-yellow-50 text-yellow-600 dark:bg-slate-800 dark:text-yellow-500"><i data-lucide="award" class="w-6 h-6"></i></div>
+                            <div class="flex-1">
+                                <h3 class="text-sm font-bold mb-2 group-hover:text-teal-600 dark:group-hover:text-teal-400">AI & Machine Learning</h3>
+                                <span class="text-xs font-medium bg-gray-100 px-2 py-1 rounded dark:bg-slate-800 dark:text-gray-400">upGrad Campus</span>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Card 4 -->
+                     <div class="group relative p-6 rounded-xl border border-gray-100 bg-white shadow-sm hover:border-teal-200 hover:shadow-lg transition-all dark:bg-slate-900 dark:border-slate-700 dark:hover:border-teal-600/50">
+                        <div class="relative flex items-start space-x-4">
+                            <div class="flex-shrink-0 p-3 rounded-lg bg-yellow-50 text-yellow-600 dark:bg-slate-800 dark:text-yellow-500"><i data-lucide="award" class="w-6 h-6"></i></div>
+                            <div class="flex-1">
+                                <h3 class="text-sm font-bold mb-2 group-hover:text-teal-600 dark:group-hover:text-teal-400">Power BI Data Analytics</h3>
+                                <span class="text-xs font-medium bg-gray-100 px-2 py-1 rounded dark:bg-slate-800 dark:text-gray-400">Codebasics</span>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Card 5 -->
+                     <div class="group relative p-6 rounded-xl border border-gray-100 bg-white shadow-sm hover:border-teal-200 hover:shadow-lg transition-all dark:bg-slate-900 dark:border-slate-700 dark:hover:border-teal-600/50">
+                        <div class="relative flex items-start space-x-4">
+                            <div class="flex-shrink-0 p-3 rounded-lg bg-yellow-50 text-yellow-600 dark:bg-slate-800 dark:text-yellow-500"><i data-lucide="award" class="w-6 h-6"></i></div>
+                            <div class="flex-1">
+                                <h3 class="text-sm font-bold mb-2 group-hover:text-teal-600 dark:group-hover:text-teal-400">Google Cloud Networking</h3>
+                                <span class="text-xs font-medium bg-gray-100 px-2 py-1 rounded dark:bg-slate-800 dark:text-gray-400">Coursera</span>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Card 6 -->
+                     <div class="group relative p-6 rounded-xl border border-gray-100 bg-white shadow-sm hover:border-teal-200 hover:shadow-lg transition-all dark:bg-slate-900 dark:border-slate-700 dark:hover:border-teal-600/50">
+                        <div class="relative flex items-start space-x-4">
+                            <div class="flex-shrink-0 p-3 rounded-lg bg-yellow-50 text-yellow-600 dark:bg-slate-800 dark:text-yellow-500"><i data-lucide="award" class="w-6 h-6"></i></div>
+                            <div class="flex-1">
+                                <h3 class="text-sm font-bold mb-2 group-hover:text-teal-600 dark:group-hover:text-teal-400">Google Data Analytics</h3>
+                                <span class="text-xs font-medium bg-gray-100 px-2 py-1 rounded dark:bg-slate-800 dark:text-gray-400">Google</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 7 -->
+                    <div class="group relative p-6 rounded-xl border border-gray-100 bg-white shadow-sm hover:border-teal-200 hover:shadow-lg transition-all dark:bg-slate-900 dark:border-slate-700 dark:hover:border-teal-600/50">
+                        <div class="relative flex items-start space-x-4">
+                            <div class="flex-shrink-0 p-3 rounded-lg bg-yellow-50 text-yellow-600 dark:bg-slate-800 dark:text-yellow-500"><i data-lucide="award" class="w-6 h-6"></i></div>
+                            <div class="flex-1">
+                                <h3 class="text-sm font-bold mb-2 group-hover:text-teal-600 dark:group-hover:text-teal-400">RHCSA & RHCE, AWS, Docker</h3>
+                                <span class="text-xs font-medium bg-gray-100 px-2 py-1 rounded dark:bg-slate-800 dark:text-gray-400">COSS</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 8 -->
+                    <div class="group relative p-6 rounded-xl border border-gray-100 bg-white shadow-sm hover:border-teal-200 hover:shadow-lg transition-all dark:bg-slate-900 dark:border-slate-700 dark:hover:border-teal-600/50">
+                        <div class="relative flex items-start space-x-4">
+                            <div class="flex-shrink-0 p-3 rounded-lg bg-yellow-50 text-yellow-600 dark:bg-slate-800 dark:text-yellow-500"><i data-lucide="award" class="w-6 h-6"></i></div>
+                            <div class="flex-1">
+                                <h3 class="text-sm font-bold mb-2 group-hover:text-teal-600 dark:group-hover:text-teal-400">Excel: Business Intelligence</h3>
+                                <span class="text-xs font-medium bg-gray-100 px-2 py-1 rounded dark:bg-slate-800 dark:text-gray-400">Codebasics</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-gray-200 bg-gray-50 dark:bg-slate-900 dark:border-slate-800">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <h2 class="text-2xl font-bold mb-6">Let's Connect</h2>
+            <p class="text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
+                I am currently open to full-time opportunities in Data Engineering and Analytics.
+                Feel free to reach out to discuss how I can contribute to your team.
+            </p>
+            <div class="flex justify-center space-x-6 mb-8">
+                <a href="mailto:ayushkusahuk@gmail.com" class="text-gray-400 hover:text-teal-600 transition-colors"><i data-lucide="mail" class="w-6 h-6"></i></a>
+                <a href="https://www.linkedin.com/in/ayush-ku-sahu/" class="text-gray-400 hover:text-teal-600 transition-colors"><i data-lucide="linkedin" class="w-6 h-6"></i></a>
+                <a href="https://github.com/EAZY-647?tab=repositories" class="text-gray-400 hover:text-teal-600 transition-colors"><i data-lucide="github" class="w-6 h-6"></i></a>
+            </div>
+            <p class="text-sm text-gray-500">© 2024 Ayush Kumar Sahu. Built with HTML & Tailwind.</p>
+        </div>
+    </footer>
+
+    <!-- RESUME MODAL -->
+    <div id="resume-modal" class="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div id="resume-content" class="bg-white text-gray-900 w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-xl shadow-2xl relative">
+            
+            <!-- Controls -->
+            <div id="resume-controls" class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center z-10">
+                <h2 class="text-lg font-semibold">Resume Preview</h2>
+                <div class="flex space-x-3">
+                    <button onclick="window.print()" class="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                        <i data-lucide="printer" class="w-4 h-4 mr-2"></i> Print / Save PDF
+                    </button>
+                    <button onclick="toggleResume(false)" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="p-8 md:p-12 text-left">
+                <!-- Header -->
+                <div class="border-b-2 border-gray-800 pb-6 mb-6">
+                    <h1 class="text-4xl font-bold uppercase tracking-wide mb-2">Ayush Kumar Sahu</h1>
+                    <p class="text-lg font-medium text-gray-700 mb-2">Data Analyst | Data Engineer | M.Sc. Big Data Science</p>
+                    <div class="flex flex-wrap gap-x-4 text-sm text-gray-600">
+                        <span class="flex items-center"><i data-lucide="mail" class="w-3 h-3 mr-1"></i> ayushkusahuk@gmail.com</span>
+                        <span class="flex items-center"><i data-lucide="map-pin" class="w-3 h-3 mr-1"></i> London, UK</span>
+                    </div>
+                </div>
+
+                <!-- Skills -->
+                <div class="mb-6">
+                    <h2 class="text-xl font-bold uppercase border-b border-gray-300 mb-3 text-gray-800">Technical Skills</h2>
+                    <div class="space-y-2 text-sm">
+                        <div class="grid grid-cols-12 gap-2">
+                            <span class="col-span-12 md:col-span-3 font-bold">Data Engineering:</span>
+                            <span class="col-span-12 md:col-span-9">Apache Spark (PySpark), Kafka, Hadoop, Airflow, dbt, Snowflake, Databricks</span>
+                        </div>
+                        <div class="grid grid-cols-12 gap-2">
+                            <span class="col-span-12 md:col-span-3 font-bold">Data Analysis:</span>
+                            <span class="col-span-12 md:col-span-9">Power BI (DAX), Tableau, Advanced Excel, Google Analytics</span>
+                        </div>
+                        <div class="grid grid-cols-12 gap-2">
+                            <span class="col-span-12 md:col-span-3 font-bold">Cloud & DevOps:</span>
+                            <span class="col-span-12 md:col-span-9">AWS, Azure, GCP, Docker, Kubernetes, Jenkins, Terraform</span>
+                        </div>
+                         <div class="grid grid-cols-12 gap-2">
+                            <span class="col-span-12 md:col-span-3 font-bold">Programming:</span>
+                            <span class="col-span-12 md:col-span-9">Python, SQL, Java, Scala</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Experience -->
+                <div class="mb-6">
+                    <h2 class="text-xl font-bold uppercase border-b border-gray-300 mb-4 text-gray-800">Professional Experience</h2>
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex justify-between items-baseline mb-1">
+                                <h3 class="text-lg font-bold">Data Analyst Intern</h3>
+                                <span class="text-sm font-semibold text-gray-600">Sep 2023 – Jan 2024</span>
+                            </div>
+                            <div class="text-md font-semibold text-gray-700 mb-2">Corizo | Remote</div>
+                            <ul class="list-disc ml-4 text-sm text-gray-700 space-y-1">
+                                <li>Focused on SQL, Excel, and Power BI.</li>
+                                <li><strong>Key Achievement:</strong> Drove 10% improvement in operational decision-making efficiency.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-baseline mb-1">
+                                <h3 class="text-lg font-bold">Data Science Intern</h3>
+                                <span class="text-sm font-semibold text-gray-600">Apr 2023 – Jul 2023</span>
+                            </div>
+                            <div class="text-md font-semibold text-gray-700 mb-2">Rubixe | On-site</div>
+                            <ul class="list-disc ml-4 text-sm text-gray-700 space-y-1">
+                                <li>Focused on ML models using Scikit-learn and Python.</li>
+                                <li><strong>Key Achievement:</strong> Enhanced predictive accuracy by 20% for inventory forecasting.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Projects -->
+                <div class="mb-6">
+                    <h2 class="text-xl font-bold uppercase border-b border-gray-300 mb-4 text-gray-800">Featured Projects</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <h3 class="text-md font-bold">End-to-End Stock Market Data Pipeline</h3>
+                            <p class="text-sm text-gray-700 italic">Stack: Power BI, Kafka, Snowflake, dbt, Airflow</p>
+                            <p class="text-sm text-gray-700">Engineered a real-time data pipeline for financial data ingestion.</p>
+                        </div>
+                        <div>
+                            <h3 class="text-md font-bold">Vendor Performance Data Analytics</h3>
+                            <p class="text-sm text-gray-700 italic">Stack: Python, Pandas, SQL, Power BI</p>
+                            <p class="text-sm text-gray-700">Conducted advanced statistical analysis to optimize supply chain costs.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                 <!-- Education -->
+                <div class="mb-6">
+                    <h2 class="text-xl font-bold uppercase border-b border-gray-300 mb-4 text-gray-800">Education</h2>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <h3 class="font-bold">Queen Mary University of London</h3>
+                            <span>2024-2025</span>
+                        </div>
+                        <p class="text-sm">M.Sc. in Big Data Science (Distinction)</p>
+
+                        <div class="flex justify-between mt-2">
+                            <h3 class="font-bold">SRM IST Chennai</h3>
+                            <span>2019-2023</span>
+                        </div>
+                        <p class="text-sm">B.Tech in Electronics & Communication Engineering</p>
+                    </div>
+                </div>
+
+                <!-- Certs -->
+                <div class="mb-6">
+                    <h2 class="text-xl font-bold uppercase border-b border-gray-300 mb-4 text-gray-800">Certifications</h2>
+                    <div class="text-sm text-gray-700 grid grid-cols-2 gap-2">
+                       <div>• Complete Data Engineering With Azure</div>
+                       <div>• SQL Associate (DataCamp)</div>
+                       <div>• Google Data Analytics Specialization</div>
+                       <div>• Power BI Data Analytics (Codebasics)</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
-  );
-};
 
-export default Portfolio;
+    <!-- Styles for Custom Components -->
+    <style>
+        .skill-tag {
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            color: #0f766e;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .dark .skill-tag {
+            background-color: #1e293b;
+            border-color: #334155;
+            color: #5eead4;
+        }
+        .tech-tag {
+            background-color: #e5e7eb;
+            color: #4b5563;
+            font-family: monospace;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+        }
+        .dark .tech-tag {
+            background-color: #1e293b;
+            color: #94a3b8;
+        }
+    </style>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Dark Mode Logic
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+
+        themeToggleBtn.addEventListener('click', () => {
+            html.classList.toggle('dark');
+        });
+
+        // Resume Modal Logic
+        const resumeModal = document.getElementById('resume-modal');
+
+        function toggleResume(show) {
+            if (show) {
+                resumeModal.classList.remove('hidden');
+                resumeModal.classList.add('flex');
+            } else {
+                resumeModal.classList.add('hidden');
+                resumeModal.classList.remove('flex');
+            }
+        }
+
+        // Close modal when clicking outside
+        resumeModal.addEventListener('click', (e) => {
+            if (e.target === resumeModal) {
+                toggleResume(false);
+            }
+        });
+    </script>
+</body>
+</html>
