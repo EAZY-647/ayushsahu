@@ -1,461 +1,780 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { 
-  Github, 
-  Linkedin, 
-  Mail, 
-  MapPin, 
-  Briefcase, 
-  GraduationCap, 
-  Code, 
-  Database, 
-  LineChart, 
-  Server, 
-  Award, 
-  ExternalLink,
-  Terminal,
-  Moon,
-  Sun
-} from 'lucide-react';
-
-// --- CUSTOM ANIMATION COMPONENTS ---
-const FadeInSection = ({ children, delay = 0 }) => {
-  const [isVisible, setVisible] = useState(false);
-  const domRef = useRef();
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.unobserve(entry.target);
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayush Kumar Sahu - Portfolio</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Configure Tailwind to support dark mode via class -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {}
+            }
         }
-      });
-    });
-    const currentRef = domRef.current;
-    if (currentRef) observer.observe(currentRef);
-    return () => {
-      if (currentRef) observer.unobserve(currentRef);
-    };
-  }, []);
+    </script>
 
-  return (
-    <div
-      ref={domRef}
-      className={`transition-all duration-1000 ease-out transform ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
-      }`}
-      style={{ transitionDelay: `${delay}ms` }}
-    >
-      {children}
-    </div>
-  );
-};
+    <!-- Lucide Icons Library -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-// --- DATA CONSTANTS ---
-
-const skills = [
-  { category: "Data Engineering", icon: <Database className="w-5 h-5" />, items: ["Spark (PySpark)", "Kafka", "Hadoop", "Airflow", "dbt", "Snowflake", "Databricks"] },
-  { category: "Analytics", icon: <LineChart className="w-5 h-5" />, items: ["Power BI (DAX)", "Tableau", "Advanced Excel", "Google Analytics"] },
-  { category: "Programming", icon: <Code className="w-5 h-5" />, items: ["Python", "SQL", "Java", "Scala", "Shell"] },
-  { category: "DevOps & Cloud", icon: <Server className="w-5 h-5" />, items: ["AWS", "Azure", "GCP", "Docker", "Kubernetes", "Terraform"] }
-];
-
-const projects = [
-  { title: "End-to-End Stock Market Data Pipeline", type: "Data Engineering", link: "https://www.linkedin.com/posts/ayush-ku-sahu_dataengineering-apachekafka-snowflake-activity-7402961976290869248-kDjR?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ", techStack: ["Apache Kafka", "Snowflake", "Python", "AWS (EC2/S3)", "PySpark"] },
-  { title: "AI Engineering with LangGraph & Azure OpenAI", type: "AI & Engineering", link: "https://www.linkedin.com/posts/ayush-ku-sahu_aiengineering-langgraph-azureopenai-ugcPost-7433119063628750848-rvjm?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ", techStack: ["Python", "LangGraph", "Azure OpenAI", "LLMs", "Vector DB"] },
-  { title: "Data Engineering with AWS & PostgreSQL", type: "Data Engineering", link: "https://www.linkedin.com/posts/ayush-ku-sahu_dataengineering-aws-postgresql-activity-7432220317009465344-8lbq?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ", techStack: ["AWS RDS", "PostgreSQL", "Python", "SQLAlchemy", "Pandas", "ETL"] },
-  { title: "Azure AI & RAG", type: "AI & Engineering", link: "https://www.linkedin.com/posts/ayush-ku-sahu_azure-artificialintelligence-rag-ugcPost-7432723235227648000-z7t6?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ", techStack: ["Azure", "Python", "RAG Architecture", "OpenAI", "ChromaDB"] },
-  { title: "Data Engineering & DevOps on AWS", type: "Data Engineering", link: "https://www.linkedin.com/posts/ayush-ku-sahu_dataengineering-devops-aws-activity-7428611522131800064--ajn?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ", techStack: ["AWS", "Docker", "CI/CD", "Terraform", "Python"] },
-  { title: "Data Engineering with Databricks & Spark", type: "Data Engineering", link: "https://www.linkedin.com/posts/ayush-ku-sahu_dataengineering-databricks-spark-activity-7426599481413926912-GAwy?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ", techStack: ["Databricks", "Apache Spark", "PySpark", "Python", "Delta Lake"] },
-  { title: "Data Engineering First Principles in Python", type: "Data Engineering", link: "https://www.linkedin.com/posts/ayush-ku-sahu_dataengineering-firstprinciples-python-activity-7430408372828454912-UhoQ?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ", techStack: ["Python", "Pandas", "SQLAlchemy", "MySQL", "PostgreSQL"] },
-  { title: "Vendor Performance Analytics", type: "Analytics", link: "https://www.linkedin.com/posts/ayush-ku-sahu_vendor-data-analysis-i-recently-completed-activity-7396481664593362944-YkX5?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ", techStack: ["Power BI", "DAX", "SQL", "Advanced Excel"] },
-  { title: "Telecom Strategy Analytics", type: "Analytics", link: "https://www.linkedin.com/posts/ayush-ku-sahu_dataanalytics-telecomstrategy-powerquery-activity-7398515931225812992-oFvI?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ", techStack: ["Power BI", "Power Query", "Data Modeling", "SQL"] },
-  { title: "Business Intelligence Dashboard (Initial Post)", type: "Analytics", link: "https://www.linkedin.com/posts/ayush-ku-sahu_dataanalytics-powerbi-businessintelligence-activity-7400807941794365440-6KlT?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ", techStack: ["Power BI", "DAX", "SQL Server", "Data Viz"] },
-  { title: "E-Commerce Inventory Analytics", type: "GitHub Repository", link: "https://github.com/EAZY-647/E-Commerce-Inventory-Analytics", techStack: ["Python", "Pandas", "SQL", "Matplotlib"] },
-  { title: "Customer Shopping Analysis", type: "GitHub Repository", link: "https://github.com/EAZY-647/customer_shopping_anlyasis", techStack: ["Python", "Pandas", "Scikit-learn", "EDA"] },
-  { title: "HealthEdgeAI", type: "GitHub Repository", link: "https://github.com/EAZY-647/healthedgeai", techStack: ["Python", "Machine Learning", "Scikit-learn", "FastAPI"] },
-];
-
-const liveDashboards = [
-  { title: "Business Intelligence / Power BI Dashboard", link: "https://lnkd.in/gNn-wDQZ", post: "https://www.linkedin.com/posts/ayush-ku-sahu_dataanalyst-businessintelligence-powerbi-activity-7421240683233091584-N9UP?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ", techStack: ["Power BI", "DAX", "Power Query"] },
-  { title: "Sales Dashboard", link: "https://lnkd.in/eRQMhRqx", post: "https://www.linkedin.com/posts/ayush-ku-sahu_powerbi-dataanalytics-salesdashboard-activity-7414954730789064704-LpDQ?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ", techStack: ["Power BI", "Data Modeling", "DAX"] },
-  { title: "Insurance Analysis Dashboard", link: "https://lnkd.in/eDH6rg43", post: "https://www.linkedin.com/posts/ayush-ku-sahu_dataanalytics-businessintelligence-insuranceanalysis-activity-7412615371779690497-ZUBX?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ", techStack: ["Power BI", "SQL", "Advanced Excel"] },
-  { title: "Healthcare Innovation Dashboard", link: "https://lnkd.in/e_4JJ6hB", post: "https://www.linkedin.com/posts/ayush-ku-sahu_dataanalytics-healthcareinnovation-powerbi-activity-7409928613812363266-eUAE?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ", techStack: ["Power BI", "Healthcare Analytics", "DAX"] }
-];
-
-const certifications = [
-  "Anthropic Claude Code in Action",
-  "Complete Data Engineering With Azure (Grow Data Skills)",
-  "SQL Associate (DataCamp)",
-  "AI & Machine Learning (upGrad Campus)",
-  "Data Science & ML Course (Coding Ninjas)",
-  "Python Foundation & Data Structures (CareerLabs)",
-  "Power BI Data Analytics (Codebasics)",
-  "Google Cloud & AWS Networking (Coursera)",
-  "Google Data Analytics (Google)",
-  "RHCSA, RHCE, AWS & Docker (COSS)",
-  "Data Science & Analytics (upGrad Campus)",
-  "Introduction to Python (Coding Ninjas)",
-  "Data Science & ML with R (Udemy)",
-  "Excel: Business Intelligence (Codebasics)"
-];
-
-// --- MAIN COMPONENT ---
-
-export default function App() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  return (
-    <div className={isDarkMode ? "dark" : ""}>
-      {/* Custom Styles for Advanced Animations */}
-      <style dangerouslySetInnerHTML={{__html: `
+    <!-- Custom CSS for Animations -->
+    <style>
         @keyframes blob {
-          0% { transform: translate(0px, 0px) scale(1); }
-          33% { transform: translate(30px, -50px) scale(1.1); }
-          66% { transform: translate(-20px, 20px) scale(0.9); }
-          100% { transform: translate(0px, 0px) scale(1); }
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
         }
-        .animate-blob { animation: blob 7s infinite; }
-        .animation-delay-2000 { animation-delay: 2s; }
-        .animation-delay-4000 { animation-delay: 4s; }
-        html { scroll-behavior: smooth; }
-      `}} />
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-300 font-sans selection:bg-blue-200 dark:selection:bg-blue-900 transition-colors duration-500 overflow-hidden relative">
+        .animate-blob { 
+            animation: blob 7s infinite; 
+        }
+        .animation-delay-2000 { 
+            animation-delay: 2s; 
+        }
+        .animation-delay-4000 { 
+            animation-delay: 4s; 
+        }
         
-        {/* HEADER / HERO SECTION */}
-        <header className="relative pt-24 pb-20 px-6 sm:px-12 border-b border-blue-100 dark:border-slate-800 bg-gradient-to-b from-sky-50 to-white dark:from-slate-900 dark:to-slate-950 transition-colors duration-500 overflow-hidden">
-          {/* Animated Background Blobs */}
-          <div className="absolute top-0 left-1/4 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 dark:opacity-10 animate-blob"></div>
-          <div className="absolute top-0 right-1/4 w-72 h-72 bg-teal-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 dark:opacity-10 animate-blob animation-delay-2000"></div>
-          <div className="absolute -bottom-8 left-1/3 w-72 h-72 bg-indigo-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 dark:opacity-10 animate-blob animation-delay-4000"></div>
+        /* Hide scrollbar for nav menu */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
 
-          <div className="max-w-6xl mx-auto relative z-10">
-            <FadeInSection>
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+        /* Scroll Reveal Animation Classes */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(3rem);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+            will-change: opacity, visibility;
+        }
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: none;
+        }
+
+        /* Delay classes for staggered project loading */
+        .delay-0 { transition-delay: 0ms; }
+        .delay-50 { transition-delay: 50ms; }
+        .delay-100 { transition-delay: 100ms; }
+        .delay-150 { transition-delay: 150ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-250 { transition-delay: 250ms; }
+        .delay-300 { transition-delay: 300ms; }
+        
+        /* Smooth color transitions for dark mode */
+        body {
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-300 font-sans selection:bg-blue-200 dark:selection:bg-blue-900 transition-colors duration-500 overflow-x-hidden relative">
+
+    <!-- HEADER / HERO SECTION -->
+    <header class="relative pt-24 pb-20 px-6 sm:px-12 border-b border-blue-100 dark:border-slate-800 bg-gradient-to-b from-sky-50 to-white dark:from-slate-900 dark:to-slate-950 transition-colors duration-500 overflow-hidden">
+        
+        <!-- Animated Background Blobs -->
+        <div class="absolute top-0 left-1/4 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 dark:opacity-10 animate-blob"></div>
+        <div class="absolute top-0 right-1/4 w-72 h-72 bg-teal-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 dark:opacity-10 animate-blob animation-delay-2000"></div>
+        <div class="absolute -bottom-8 left-1/3 w-72 h-72 bg-indigo-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 dark:opacity-10 animate-blob animation-delay-4000"></div>
+
+        <div class="max-w-6xl mx-auto relative z-10">
+            <div class="fade-in-section flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                 <div>
-                  <div className="flex items-center gap-3 mb-6">
-                    <span className="px-4 py-1.5 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800/50 rounded-full text-xs font-bold tracking-wider uppercase shadow-sm flex items-center gap-2">
-                      <span className="relative flex h-2.5 w-2.5">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500"></span>
-                      </span>
-                      Available for Opportunities
-                    </span>
-                    <span className="flex items-center gap-1 text-slate-500 dark:text-slate-400 text-sm font-medium bg-white/50 dark:bg-slate-800/50 px-3 py-1.5 rounded-full backdrop-blur-sm border border-slate-200 dark:border-slate-700">
-                      <MapPin className="w-4 h-4 text-blue-500" /> United Kingdom
-                    </span>
-                  </div>
-                  <h1 className="text-5xl md:text-7xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-4">
-                    Ayush Kumar <br className="hidden md:block"/>
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-teal-400 dark:from-blue-400 dark:to-teal-300">Sahu</span>
-                  </h1>
-                  <p className="text-xl md:text-2xl text-slate-600 dark:text-slate-300 font-medium mb-3">
-                    Data Engineer | M.Sc. Big Data Science
-                  </p>
-                  <p className="text-slate-500 dark:text-slate-400 italic text-lg max-w-2xl">"Architecting robust data pipelines and scalable infrastructure."</p>
-                </div>
-                
-                <div className="flex gap-4 items-center">
-                  {/* Theme Toggle Button */}
-                  <button 
-                    onClick={() => setIsDarkMode(!isDarkMode)} 
-                    className="p-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-all shadow-sm hover:shadow-md hover:-translate-y-1 active:scale-95 group" 
-                    aria-label="Toggle Theme"
-                  >
-                    {isDarkMode ? (
-                      <Sun className="w-5 h-5 group-hover:rotate-90 transition-transform duration-500 text-amber-400" />
-                    ) : (
-                      <Moon className="w-5 h-5 group-hover:-rotate-12 transition-transform duration-500 text-slate-600" />
-                    )}
-                  </button>
-
-                  <a href="mailto:ayushkusahuk@gmail.com" className="p-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-all shadow-sm hover:shadow-md hover:-translate-y-1 active:scale-95 group" aria-label="Email">
-                    <Mail className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                  </a>
-                  <a href="https://www.linkedin.com/in/ayush-ku-sahu/" target="_blank" rel="noopener noreferrer" className="p-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-all shadow-sm hover:shadow-md hover:-translate-y-1 active:scale-95 group" aria-label="LinkedIn">
-                    <Linkedin className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                  </a>
-                  <a href="https://github.com/EAZY-647?tab=repositories" target="_blank" rel="noopener noreferrer" className="p-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-all shadow-sm hover:shadow-md hover:-translate-y-1 active:scale-95 group" aria-label="GitHub">
-                    <Github className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                  </a>
-                </div>
-              </div>
-            </FadeInSection>
-          </div>
-        </header>
-
-        {/* NAVIGATION TABS */}
-        <div className="sticky top-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm transition-colors duration-300">
-          <div className="max-w-6xl mx-auto px-6 sm:px-12 flex gap-6 overflow-x-auto no-scrollbar">
-            <a href="#overview" className="py-4 text-sm font-bold transition-all border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-600 dark:hover:border-blue-400 whitespace-nowrap active:scale-95">Overview</a>
-            <a href="#projects" className="py-4 text-sm font-bold transition-all border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-600 dark:hover:border-blue-400 whitespace-nowrap active:scale-95">Projects</a>
-            <a href="#dashboards" className="py-4 text-sm font-bold transition-all border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-600 dark:hover:border-blue-400 whitespace-nowrap active:scale-95">Dashboards</a>
-          </div>
-        </div>
-
-        <main className="max-w-6xl mx-auto px-6 sm:px-12 py-12 space-y-32">
-          
-          {/* SECTION 1: OVERVIEW */}
-          <div id="overview" className="space-y-24 scroll-mt-24">
-            
-            {/* About Section */}
-            <FadeInSection>
-              <section className="grid md:grid-cols-3 gap-8 items-start relative">
-                {/* Decorative element */}
-                <div className="absolute -left-10 top-10 w-20 h-20 bg-blue-500/10 rounded-full blur-2xl dark:bg-blue-400/10"></div>
-                
-                <div className="md:col-span-2 space-y-4 relative z-10">
-                  <h2 className="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-                    <Terminal className="w-8 h-8 text-blue-500" /> About Me
-                  </h2>
-                  <div className="text-slate-600 dark:text-slate-300 leading-relaxed space-y-4 text-lg">
-                    <p>
-                      I am a dedicated Data Engineer specializing in designing, building, and optimizing robust data architectures and scalable ETL/ELT pipelines. With an M.Sc. in Big Data Science and deep expertise in distributed systems (Spark, Kafka), relational databases (PostgreSQL), and cloud platforms (AWS, Azure), I focus on processing complex data streams into reliable, high-performing infrastructure. I am passionate about building fault-tolerant systems that lay the foundation for advanced analytics and AI.
-                    </p>
-                  </div>
-                </div>
-                <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-lg hover:shadow-xl hover:border-blue-300 dark:hover:border-slate-600 transition-all hover:-translate-y-1 relative z-10">
-                  <h3 className="font-bold text-slate-900 dark:text-white mb-4 uppercase text-sm tracking-wider flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Current Role
-                  </h3>
-                  <div className="flex items-start gap-3">
-                    <div className="p-3 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl">
-                      <Briefcase className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-lg text-slate-800 dark:text-slate-200">Data Engineer</h4>
-                      <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">ByteIQ Analytics (Full-time)</p>
-                      <p className="text-xs font-bold text-blue-600 dark:text-blue-400 mt-2 bg-blue-50 dark:bg-blue-900/40 inline-block px-2.5 py-1 rounded-md shadow-sm">Jan 2026 – Present</p>
-                    </div>
-                  </div>
-                </div>
-              </section>
-            </FadeInSection>
-
-            {/* GitHub Activity */}
-            <FadeInSection delay={100}>
-              <section>
-                <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3">
-                  <Github className="w-8 h-8 text-blue-500" /> GitHub Activity
-                </h2>
-                <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 p-4 rounded-2xl overflow-x-auto shadow-lg hover:shadow-xl transition-shadow">
-                  <img 
-                    src="https://ghchart.rshah.org/2563eb/EAZY-647" 
-                    alt="Ayush's GitHub Activity Chart" 
-                    className="min-w-[700px] w-full hover:scale-[1.01] transition-transform duration-500"
-                  />
-                </div>
-              </section>
-            </FadeInSection>
-
-            {/* Technical Expertise */}
-            <FadeInSection delay={200}>
-              <section>
-                <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-8">Technical Expertise</h2>
-                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {skills.map((skillGroup, idx) => (
-                    <div key={idx} className="group bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl p-6 hover:border-blue-400 dark:hover:border-blue-500 shadow-lg hover:shadow-blue-500/10 transition-all hover:-translate-y-2">
-                      <div className="flex items-center gap-3 mb-6 text-blue-600 dark:text-blue-400 group-hover:scale-105 transition-transform origin-left">
-                        <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg group-hover:bg-blue-100 dark:group-hover:bg-blue-900/50 transition-colors">
-                          {skillGroup.icon}
-                        </div>
-                        <h3 className="font-bold text-lg text-slate-800 dark:text-slate-200">{skillGroup.category}</h3>
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {skillGroup.items.map((skill, i) => (
-                          <span key={i} className="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-xs rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-200 dark:hover:border-blue-800 transition-colors cursor-default">
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            </FadeInSection>
-
-            {/* Education & Certifications */}
-            <FadeInSection delay={300}>
-              <section className="grid md:grid-cols-2 gap-12">
-                <div>
-                  <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
-                    <GraduationCap className="w-6 h-6 text-blue-500" /> Education
-                  </h2>
-                  <div className="space-y-6">
-                    <div className="relative pl-6 border-l-2 border-slate-200 dark:border-slate-700">
-                      <div className="absolute w-3 h-3 bg-blue-500 rounded-full -left-[7px] top-1.5 ring-4 ring-white dark:ring-slate-950"></div>
-                      <h3 className="font-bold text-lg text-slate-800 dark:text-slate-200">Queen Mary University of London</h3>
-                      <p className="text-blue-600 dark:text-blue-400 font-bold">M.Sc. Big Data Science <span className="text-slate-500 dark:text-slate-400 text-sm font-medium">(Distinction)</span></p>
-                      <p className="text-sm text-slate-400 dark:text-slate-500 mt-1 font-medium">2024 - 2025</p>
-                    </div>
-                    <div className="relative pl-6 border-l-2 border-slate-200 dark:border-slate-700">
-                      <div className="absolute w-3 h-3 bg-slate-300 dark:bg-slate-600 rounded-full -left-[7px] top-1.5 ring-4 ring-white dark:ring-slate-950"></div>
-                      <h3 className="font-bold text-lg text-slate-800 dark:text-slate-200">SRM IST Chennai</h3>
-                      <p className="text-slate-600 dark:text-slate-300 font-medium">B.Tech Electronics & Communication</p>
-                      <p className="text-sm text-slate-400 dark:text-slate-500 mt-1 font-medium">2019 - 2023</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
-                    <Award className="w-6 h-6 text-blue-500" /> Certifications
-                  </h2>
-                  <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow max-h-[300px] overflow-y-auto no-scrollbar">
-                    <ul className="space-y-3">
-                      {certifications.map((cert, idx) => (
-                        <li key={idx} className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-300 font-medium hover:translate-x-1 transition-transform">
-                          <Award className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
-                          <span>{cert}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </section>
-            </FadeInSection>
-          </div>
-
-          {/* SECTION 2: PROJECTS */}
-          <div id="projects" className="space-y-8 scroll-mt-24 pt-12 border-t border-slate-200 dark:border-slate-800 relative">
-            {/* Decorative blob */}
-            <div className="absolute right-0 top-0 w-64 h-64 bg-teal-400/5 rounded-full blur-3xl animate-pulse"></div>
-
-            <div className="flex items-center justify-between mb-8 relative z-10">
-              <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Data Engineering & AI Projects</h2>
-              </div>
-              
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
-                {projects.map((proj, idx) => (
-                  <FadeInSection key={idx} delay={idx * 50}>
-                    <a 
-                      href={proj.link} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="group h-full flex flex-col bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-400 dark:hover:border-blue-500 overflow-hidden relative"
-                    >
-                      {/* Hover gradient background effect */}
-                      <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent dark:from-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                      
-                      <div className="flex justify-between items-start mb-4 relative z-10">
-                        <span className="text-xs font-bold px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-blue-600 dark:text-blue-400 rounded-lg border border-slate-200 dark:border-slate-700 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 group-hover:border-blue-300 dark:group-hover:border-blue-700 transition-colors shadow-sm">
-                          {proj.type}
-                        </span>
-                        <div className="p-2 bg-slate-50 dark:bg-slate-800 rounded-full group-hover:bg-blue-50 dark:group-hover:bg-blue-900/40 transition-colors">
-                          <ExternalLink className="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors group-hover:rotate-12" />
-                        </div>
-                      </div>
-                      <h3 className="font-bold text-xl text-slate-800 dark:text-slate-200 group-hover:text-blue-700 dark:group-hover:text-blue-400 mb-3 leading-tight relative z-10 transition-colors">
-                        {proj.title}
-                      </h3>
-                      <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 mb-8 font-medium group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors relative z-10">
-                        Click to view detailed project documentation and architecture.
-                      </p>
-                      
-                      {/* Render Tech Stack Tags if they exist */}
-                      {proj.techStack && (
-                        <div className="flex flex-wrap gap-2 mt-auto relative z-10">
-                          {proj.techStack.map((tech, i) => (
-                            <span key={i} className="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 group-hover:border-blue-200 dark:group-hover:border-blue-800/50 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors shadow-sm">
-                              {tech}
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="px-4 py-1.5 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800/50 rounded-full text-xs font-bold tracking-wider uppercase shadow-sm flex items-center gap-2">
+                            <span class="relative flex h-2.5 w-2.5">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500"></span>
                             </span>
-                          ))}
-                        </div>
-                      )}
+                            Available for Opportunities
+                        </span>
+                        <span class="flex items-center gap-1 text-slate-500 dark:text-slate-400 text-sm font-medium bg-white/50 dark:bg-slate-800/50 px-3 py-1.5 rounded-full backdrop-blur-sm border border-slate-200 dark:border-slate-700">
+                            <i data-lucide="map-pin" class="w-4 h-4 text-blue-500"></i> United Kingdom
+                        </span>
+                    </div>
+                    <h1 class="text-5xl md:text-7xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-4">
+                        Ayush Kumar <br class="hidden md:block"/>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-teal-400 dark:from-blue-400 dark:to-teal-300">Sahu</span>
+                    </h1>
+                    <p class="text-xl md:text-2xl text-slate-600 dark:text-slate-300 font-medium mb-3">
+                        Data Engineer | M.Sc. Big Data Science
+                    </p>
+                    <p class="text-slate-500 dark:text-slate-400 italic text-lg max-w-2xl">"Architecting robust data pipelines and scalable infrastructure."</p>
+                </div>
+                
+                <div class="flex gap-4 items-center">
+                    <!-- Theme Toggle Button -->
+                    <button id="theme-toggle" class="p-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-all shadow-sm hover:shadow-md hover:-translate-y-1 active:scale-95 group" aria-label="Toggle Theme">
+                        <i data-lucide="moon" id="theme-icon-moon" class="w-5 h-5 group-hover:-rotate-12 transition-transform duration-500 text-slate-600"></i>
+                        <i data-lucide="sun" id="theme-icon-sun" class="w-5 h-5 group-hover:rotate-90 transition-transform duration-500 text-amber-400 hidden"></i>
+                    </button>
+
+                    <a href="mailto:ayushkusahuk@gmail.com" class="p-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-all shadow-sm hover:shadow-md hover:-translate-y-1 active:scale-95 group" aria-label="Email">
+                        <i data-lucide="mail" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
                     </a>
-                  </FadeInSection>
-                ))}
-              </div>
+                    <a href="https://www.linkedin.com/in/ayush-ku-sahu/" target="_blank" rel="noopener noreferrer" class="p-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-all shadow-sm hover:shadow-md hover:-translate-y-1 active:scale-95 group" aria-label="LinkedIn">
+                        <i data-lucide="linkedin" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                    </a>
+                    <a href="https://github.com/EAZY-647?tab=repositories" target="_blank" rel="noopener noreferrer" class="p-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-all shadow-sm hover:shadow-md hover:-translate-y-1 active:scale-95 group" aria-label="GitHub">
+                        <i data-lucide="github" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- NAVIGATION TABS -->
+    <div class="sticky top-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm transition-colors duration-300">
+        <div class="max-w-6xl mx-auto px-6 sm:px-12 flex gap-6 overflow-x-auto no-scrollbar">
+            <a href="#overview" class="py-4 text-sm font-bold transition-all border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-600 dark:hover:border-blue-400 whitespace-nowrap active:scale-95">Overview</a>
+            <a href="#projects" class="py-4 text-sm font-bold transition-all border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-600 dark:hover:border-blue-400 whitespace-nowrap active:scale-95">Projects</a>
+            <a href="#dashboards" class="py-4 text-sm font-bold transition-all border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-600 dark:hover:border-blue-400 whitespace-nowrap active:scale-95">Dashboards</a>
+        </div>
+    </div>
+
+    <main class="max-w-6xl mx-auto px-6 sm:px-12 py-12 space-y-32">
+        
+        <!-- SECTION 1: OVERVIEW -->
+        <div id="overview" class="space-y-24 scroll-mt-24">
+            
+            <!-- About Section -->
+            <div class="fade-in-section">
+                <section class="grid md:grid-cols-3 gap-8 items-start relative">
+                    <!-- Decorative element -->
+                    <div class="absolute -left-10 top-10 w-20 h-20 bg-blue-500/10 rounded-full blur-2xl dark:bg-blue-400/10"></div>
+                    
+                    <div class="md:col-span-2 space-y-4 relative z-10">
+                        <h2 class="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+                            <i data-lucide="terminal" class="w-8 h-8 text-blue-500"></i> About Me
+                        </h2>
+                        <div class="text-slate-600 dark:text-slate-300 leading-relaxed space-y-4 text-lg">
+                            <p>
+                                I am a dedicated Data Engineer specializing in designing, building, and optimizing robust data architectures and scalable ETL/ELT pipelines. With an M.Sc. in Big Data Science and deep expertise in distributed systems (Spark, Kafka), relational databases (PostgreSQL), and cloud platforms (AWS, Azure), I focus on processing complex data streams into reliable, high-performing infrastructure. I am passionate about building fault-tolerant systems that lay the foundation for advanced analytics and AI.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-lg hover:shadow-xl hover:border-blue-300 dark:hover:border-slate-600 transition-all hover:-translate-y-1 relative z-10">
+                        <h3 class="font-bold text-slate-900 dark:text-white mb-4 uppercase text-sm tracking-wider flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Current Role
+                        </h3>
+                        <div class="flex items-start gap-3">
+                            <div class="p-3 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl">
+                                <i data-lucide="briefcase" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg text-slate-800 dark:text-slate-200">Data Engineer</h4>
+                                <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">ByteIQ Analytics (Full-time)</p>
+                                <p class="text-xs font-bold text-blue-600 dark:text-blue-400 mt-2 bg-blue-50 dark:bg-blue-900/40 inline-block px-2.5 py-1 rounded-md shadow-sm">Jan 2026 – Present</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
 
-          {/* SECTION 3: DASHBOARDS */}
-          <div id="dashboards" className="space-y-12 scroll-mt-24 pt-12 border-t border-slate-200 dark:border-slate-800">
-            
-            {/* Featured Interactive Dashboard */}
-            <FadeInSection>
-              <section className="space-y-6">
-                <div className="flex justify-between items-end">
-                  <div>
-                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-3">
-                      <LineChart className="w-8 h-8 text-blue-500" /> Featured Interactive Dashboard
+            <!-- GitHub Activity -->
+            <div class="fade-in-section delay-100">
+                <section>
+                    <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3">
+                        <i data-lucide="github" class="w-8 h-8 text-blue-500"></i> GitHub Activity
                     </h2>
-                    <p className="text-slate-600 dark:text-slate-400 text-lg">Fully interactive Business Intelligence reporting tool built with Power BI.</p>
-                  </div>
+                    <div class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 p-4 rounded-2xl overflow-x-auto shadow-lg hover:shadow-xl transition-shadow">
+                        <img src="https://ghchart.rshah.org/2563eb/EAZY-647" alt="Ayush's GitHub Activity Chart" class="min-w-[700px] w-full hover:scale-[1.01] transition-transform duration-500"/>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Technical Expertise -->
+            <div class="fade-in-section delay-200">
+                <section>
+                    <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-8">Technical Expertise</h2>
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- Skill Block 1 -->
+                        <div class="group bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl p-6 hover:border-blue-400 dark:hover:border-blue-500 shadow-lg hover:shadow-blue-500/10 transition-all hover:-translate-y-2">
+                            <div class="flex items-center gap-3 mb-6 text-blue-600 dark:text-blue-400 group-hover:scale-105 transition-transform origin-left">
+                                <div class="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg group-hover:bg-blue-100 dark:group-hover:bg-blue-900/50 transition-colors">
+                                    <i data-lucide="database" class="w-5 h-5"></i>
+                                </div>
+                                <h3 class="font-bold text-lg text-slate-800 dark:text-slate-200">Data Engineering</h3>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-xs rounded-lg border border-slate-200 dark:border-slate-700">Spark (PySpark)</span>
+                                <span class="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-xs rounded-lg border border-slate-200 dark:border-slate-700">Kafka</span>
+                                <span class="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-xs rounded-lg border border-slate-200 dark:border-slate-700">Hadoop</span>
+                                <span class="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-xs rounded-lg border border-slate-200 dark:border-slate-700">Airflow</span>
+                                <span class="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-xs rounded-lg border border-slate-200 dark:border-slate-700">dbt</span>
+                                <span class="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-xs rounded-lg border border-slate-200 dark:border-slate-700">Snowflake</span>
+                                <span class="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-xs rounded-lg border border-slate-200 dark:border-slate-700">Databricks</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Skill Block 2 -->
+                        <div class="group bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl p-6 hover:border-blue-400 dark:hover:border-blue-500 shadow-lg hover:shadow-blue-500/10 transition-all hover:-translate-y-2">
+                            <div class="flex items-center gap-3 mb-6 text-blue-600 dark:text-blue-400 group-hover:scale-105 transition-transform origin-left">
+                                <div class="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg group-hover:bg-blue-100 dark:group-hover:bg-blue-900/50 transition-colors">
+                                    <i data-lucide="line-chart" class="w-5 h-5"></i>
+                                </div>
+                                <h3 class="font-bold text-lg text-slate-800 dark:text-slate-200">Analytics</h3>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-xs rounded-lg border border-slate-200 dark:border-slate-700">Power BI (DAX)</span>
+                                <span class="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-xs rounded-lg border border-slate-200 dark:border-slate-700">Tableau</span>
+                                <span class="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-xs rounded-lg border border-slate-200 dark:border-slate-700">Advanced Excel</span>
+                                <span class="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-xs rounded-lg border border-slate-200 dark:border-slate-700">Google Analytics</span>
+                            </div>
+                        </div>
+
+                        <!-- Skill Block 3 -->
+                        <div class="group bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl p-6 hover:border-blue-400 dark:hover:border-blue-500 shadow-lg hover:shadow-blue-500/10 transition-all hover:-translate-y-2">
+                            <div class="flex items-center gap-3 mb-6 text-blue-600 dark:text-blue-400 group-hover:scale-105 transition-transform origin-left">
+                                <div class="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg group-hover:bg-blue-100 dark:group-hover:bg-blue-900/50 transition-colors">
+                                    <i data-lucide="code" class="w-5 h-5"></i>
+                                </div>
+                                <h3 class="font-bold text-lg text-slate-800 dark:text-slate-200">Programming</h3>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-xs rounded-lg border border-slate-200 dark:border-slate-700">Python</span>
+                                <span class="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-xs rounded-lg border border-slate-200 dark:border-slate-700">SQL</span>
+                                <span class="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-xs rounded-lg border border-slate-200 dark:border-slate-700">Java</span>
+                                <span class="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-xs rounded-lg border border-slate-200 dark:border-slate-700">Scala</span>
+                                <span class="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-xs rounded-lg border border-slate-200 dark:border-slate-700">Shell</span>
+                            </div>
+                        </div>
+
+                        <!-- Skill Block 4 -->
+                        <div class="group bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl p-6 hover:border-blue-400 dark:hover:border-blue-500 shadow-lg hover:shadow-blue-500/10 transition-all hover:-translate-y-2">
+                            <div class="flex items-center gap-3 mb-6 text-blue-600 dark:text-blue-400 group-hover:scale-105 transition-transform origin-left">
+                                <div class="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg group-hover:bg-blue-100 dark:group-hover:bg-blue-900/50 transition-colors">
+                                    <i data-lucide="server" class="w-5 h-5"></i>
+                                </div>
+                                <h3 class="font-bold text-lg text-slate-800 dark:text-slate-200">DevOps & Cloud</h3>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-xs rounded-lg border border-slate-200 dark:border-slate-700">AWS</span>
+                                <span class="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-xs rounded-lg border border-slate-200 dark:border-slate-700">Azure</span>
+                                <span class="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-xs rounded-lg border border-slate-200 dark:border-slate-700">GCP</span>
+                                <span class="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-xs rounded-lg border border-slate-200 dark:border-slate-700">Docker</span>
+                                <span class="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-xs rounded-lg border border-slate-200 dark:border-slate-700">Kubernetes</span>
+                                <span class="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-xs rounded-lg border border-slate-200 dark:border-slate-700">Terraform</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+            </div>
+
+            <!-- Education & Certifications -->
+            <div class="fade-in-section delay-300">
+                <section class="grid md:grid-cols-2 gap-12">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+                            <i data-lucide="graduation-cap" class="w-6 h-6 text-blue-500"></i> Education
+                        </h2>
+                        <div class="space-y-6">
+                            <div class="relative pl-6 border-l-2 border-slate-200 dark:border-slate-700">
+                                <div class="absolute w-3 h-3 bg-blue-500 rounded-full -left-[7px] top-1.5 ring-4 ring-white dark:ring-slate-950"></div>
+                                <h3 class="font-bold text-lg text-slate-800 dark:text-slate-200">Queen Mary University of London</h3>
+                                <p class="text-blue-600 dark:text-blue-400 font-bold">M.Sc. Big Data Science <span class="text-slate-500 dark:text-slate-400 text-sm font-medium">(Distinction)</span></p>
+                                <p class="text-sm text-slate-400 dark:text-slate-500 mt-1 font-medium">2024 - 2025</p>
+                            </div>
+                            <div class="relative pl-6 border-l-2 border-slate-200 dark:border-slate-700">
+                                <div class="absolute w-3 h-3 bg-slate-300 dark:bg-slate-600 rounded-full -left-[7px] top-1.5 ring-4 ring-white dark:ring-slate-950"></div>
+                                <h3 class="font-bold text-lg text-slate-800 dark:text-slate-200">SRM IST Chennai</h3>
+                                <p class="text-slate-600 dark:text-slate-300 font-medium">B.Tech Electronics & Communication</p>
+                                <p class="text-sm text-slate-400 dark:text-slate-500 mt-1 font-medium">2019 - 2023</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+                            <i data-lucide="award" class="w-6 h-6 text-blue-500"></i> Certifications
+                        </h2>
+                        <div class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow max-h-[300px] overflow-y-auto no-scrollbar">
+                            <ul class="space-y-3">
+                                <li class="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-300 font-medium hover:translate-x-1 transition-transform"><i data-lucide="award" class="w-4 h-4 text-blue-500 shrink-0 mt-0.5"></i> <span>Anthropic Claude Code in Action</span></li>
+                                <li class="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-300 font-medium hover:translate-x-1 transition-transform"><i data-lucide="award" class="w-4 h-4 text-blue-500 shrink-0 mt-0.5"></i> <span>Complete Data Engineering With Azure (Grow Data Skills)</span></li>
+                                <li class="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-300 font-medium hover:translate-x-1 transition-transform"><i data-lucide="award" class="w-4 h-4 text-blue-500 shrink-0 mt-0.5"></i> <span>SQL Associate (DataCamp)</span></li>
+                                <li class="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-300 font-medium hover:translate-x-1 transition-transform"><i data-lucide="award" class="w-4 h-4 text-blue-500 shrink-0 mt-0.5"></i> <span>AI & Machine Learning (upGrad Campus)</span></li>
+                                <li class="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-300 font-medium hover:translate-x-1 transition-transform"><i data-lucide="award" class="w-4 h-4 text-blue-500 shrink-0 mt-0.5"></i> <span>Data Science & ML Course (Coding Ninjas)</span></li>
+                                <li class="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-300 font-medium hover:translate-x-1 transition-transform"><i data-lucide="award" class="w-4 h-4 text-blue-500 shrink-0 mt-0.5"></i> <span>Python Foundation & Data Structures (CareerLabs)</span></li>
+                                <li class="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-300 font-medium hover:translate-x-1 transition-transform"><i data-lucide="award" class="w-4 h-4 text-blue-500 shrink-0 mt-0.5"></i> <span>Power BI Data Analytics (Codebasics)</span></li>
+                                <li class="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-300 font-medium hover:translate-x-1 transition-transform"><i data-lucide="award" class="w-4 h-4 text-blue-500 shrink-0 mt-0.5"></i> <span>Google Cloud & AWS Networking (Coursera)</span></li>
+                                <li class="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-300 font-medium hover:translate-x-1 transition-transform"><i data-lucide="award" class="w-4 h-4 text-blue-500 shrink-0 mt-0.5"></i> <span>Google Data Analytics (Google)</span></li>
+                                <li class="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-300 font-medium hover:translate-x-1 transition-transform"><i data-lucide="award" class="w-4 h-4 text-blue-500 shrink-0 mt-0.5"></i> <span>RHCSA, RHCE, AWS & Docker (COSS)</span></li>
+                                <li class="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-300 font-medium hover:translate-x-1 transition-transform"><i data-lucide="award" class="w-4 h-4 text-blue-500 shrink-0 mt-0.5"></i> <span>Data Science & Analytics (upGrad Campus)</span></li>
+                                <li class="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-300 font-medium hover:translate-x-1 transition-transform"><i data-lucide="award" class="w-4 h-4 text-blue-500 shrink-0 mt-0.5"></i> <span>Introduction to Python (Coding Ninjas)</span></li>
+                                <li class="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-300 font-medium hover:translate-x-1 transition-transform"><i data-lucide="award" class="w-4 h-4 text-blue-500 shrink-0 mt-0.5"></i> <span>Data Science & ML with R (Udemy)</span></li>
+                                <li class="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-300 font-medium hover:translate-x-1 transition-transform"><i data-lucide="award" class="w-4 h-4 text-blue-500 shrink-0 mt-0.5"></i> <span>Excel: Business Intelligence (Codebasics)</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- SECTION 2: PROJECTS -->
+        <div id="projects" class="space-y-8 scroll-mt-24 pt-12 border-t border-slate-200 dark:border-slate-800 relative">
+            <div class="absolute right-0 top-0 w-64 h-64 bg-teal-400/5 rounded-full blur-3xl animate-pulse"></div>
+
+            <div class="flex items-center justify-between mb-8 relative z-10">
+                <h2 class="text-3xl font-bold text-slate-900 dark:text-white">Data Engineering & AI Projects</h2>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
+                <!-- Project 1 -->
+                <div class="fade-in-section delay-0">
+                    <a href="https://www.linkedin.com/posts/ayush-ku-sahu_dataengineering-apachekafka-snowflake-activity-7402961976290869248-kDjR?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ" target="_blank" rel="noopener noreferrer" class="group h-full flex flex-col bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-400 dark:hover:border-blue-500 overflow-hidden relative">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent dark:from-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div class="flex justify-between items-start mb-4 relative z-10">
+                            <span class="text-xs font-bold px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-blue-600 dark:text-blue-400 rounded-lg border border-slate-200 dark:border-slate-700 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 group-hover:border-blue-300 dark:group-hover:border-blue-700 transition-colors shadow-sm">Data Engineering</span>
+                            <div class="p-2 bg-slate-50 dark:bg-slate-800 rounded-full group-hover:bg-blue-50 dark:group-hover:bg-blue-900/40 transition-colors">
+                                <i data-lucide="external-link" class="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors group-hover:rotate-12"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-xl text-slate-800 dark:text-slate-200 group-hover:text-blue-700 dark:group-hover:text-blue-400 mb-3 leading-tight relative z-10 transition-colors">End-to-End Stock Market Data Pipeline</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 mb-8 font-medium group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors relative z-10">Click to view detailed project documentation and architecture.</p>
+                        <div class="flex flex-wrap gap-2 mt-auto relative z-10">
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">Apache Kafka</span>
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">Snowflake</span>
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">Python</span>
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">AWS</span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="fade-in-section delay-50">
+                    <a href="https://www.linkedin.com/posts/ayush-ku-sahu_aiengineering-langgraph-azureopenai-ugcPost-7433119063628750848-rvjm?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ" target="_blank" rel="noopener noreferrer" class="group h-full flex flex-col bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-400 dark:hover:border-blue-500 overflow-hidden relative">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent dark:from-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div class="flex justify-between items-start mb-4 relative z-10">
+                            <span class="text-xs font-bold px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-blue-600 dark:text-blue-400 rounded-lg border border-slate-200 dark:border-slate-700 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 group-hover:border-blue-300 dark:group-hover:border-blue-700 transition-colors shadow-sm">AI & Engineering</span>
+                            <div class="p-2 bg-slate-50 dark:bg-slate-800 rounded-full group-hover:bg-blue-50 dark:group-hover:bg-blue-900/40 transition-colors">
+                                <i data-lucide="external-link" class="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors group-hover:rotate-12"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-xl text-slate-800 dark:text-slate-200 group-hover:text-blue-700 dark:group-hover:text-blue-400 mb-3 leading-tight relative z-10 transition-colors">AI Engineering with LangGraph & Azure OpenAI</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 mb-8 font-medium group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors relative z-10">Click to view detailed project documentation and architecture.</p>
+                        <div class="flex flex-wrap gap-2 mt-auto relative z-10">
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">Python</span>
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">LangGraph</span>
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">Azure OpenAI</span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="fade-in-section delay-100">
+                    <a href="https://www.linkedin.com/posts/ayush-ku-sahu_dataengineering-aws-postgresql-activity-7432220317009465344-8lbq?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ" target="_blank" rel="noopener noreferrer" class="group h-full flex flex-col bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-400 dark:hover:border-blue-500 overflow-hidden relative">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent dark:from-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div class="flex justify-between items-start mb-4 relative z-10">
+                            <span class="text-xs font-bold px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-blue-600 dark:text-blue-400 rounded-lg border border-slate-200 dark:border-slate-700 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 group-hover:border-blue-300 dark:group-hover:border-blue-700 transition-colors shadow-sm">Data Engineering</span>
+                            <div class="p-2 bg-slate-50 dark:bg-slate-800 rounded-full group-hover:bg-blue-50 dark:group-hover:bg-blue-900/40 transition-colors">
+                                <i data-lucide="external-link" class="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors group-hover:rotate-12"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-xl text-slate-800 dark:text-slate-200 group-hover:text-blue-700 dark:group-hover:text-blue-400 mb-3 leading-tight relative z-10 transition-colors">Data Engineering with AWS & PostgreSQL</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 mb-8 font-medium group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors relative z-10">Click to view detailed project documentation and architecture.</p>
+                        <div class="flex flex-wrap gap-2 mt-auto relative z-10">
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">AWS RDS</span>
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">PostgreSQL</span>
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">SQLAlchemy</span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Project 4 -->
+                <div class="fade-in-section delay-150">
+                    <a href="https://www.linkedin.com/posts/ayush-ku-sahu_azure-artificialintelligence-rag-ugcPost-7432723235227648000-z7t6?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ" target="_blank" rel="noopener noreferrer" class="group h-full flex flex-col bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-400 dark:hover:border-blue-500 overflow-hidden relative">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent dark:from-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div class="flex justify-between items-start mb-4 relative z-10">
+                            <span class="text-xs font-bold px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-blue-600 dark:text-blue-400 rounded-lg border border-slate-200 dark:border-slate-700 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 group-hover:border-blue-300 dark:group-hover:border-blue-700 transition-colors shadow-sm">AI & Engineering</span>
+                            <div class="p-2 bg-slate-50 dark:bg-slate-800 rounded-full group-hover:bg-blue-50 dark:group-hover:bg-blue-900/40 transition-colors">
+                                <i data-lucide="external-link" class="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors group-hover:rotate-12"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-xl text-slate-800 dark:text-slate-200 group-hover:text-blue-700 dark:group-hover:text-blue-400 mb-3 leading-tight relative z-10 transition-colors">Azure AI & RAG</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 mb-8 font-medium group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors relative z-10">Click to view detailed project documentation and architecture.</p>
+                        <div class="flex flex-wrap gap-2 mt-auto relative z-10">
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">Azure</span>
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">Python</span>
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">RAG Architecture</span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Project 5 -->
+                <div class="fade-in-section delay-200">
+                    <a href="https://www.linkedin.com/posts/ayush-ku-sahu_dataengineering-devops-aws-activity-7428611522131800064--ajn?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ" target="_blank" rel="noopener noreferrer" class="group h-full flex flex-col bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-400 dark:hover:border-blue-500 overflow-hidden relative">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent dark:from-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div class="flex justify-between items-start mb-4 relative z-10">
+                            <span class="text-xs font-bold px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-blue-600 dark:text-blue-400 rounded-lg border border-slate-200 dark:border-slate-700 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 group-hover:border-blue-300 dark:group-hover:border-blue-700 transition-colors shadow-sm">Data Engineering</span>
+                            <div class="p-2 bg-slate-50 dark:bg-slate-800 rounded-full group-hover:bg-blue-50 dark:group-hover:bg-blue-900/40 transition-colors">
+                                <i data-lucide="external-link" class="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors group-hover:rotate-12"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-xl text-slate-800 dark:text-slate-200 group-hover:text-blue-700 dark:group-hover:text-blue-400 mb-3 leading-tight relative z-10 transition-colors">Data Engineering & DevOps on AWS</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 mb-8 font-medium group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors relative z-10">Click to view detailed project documentation and architecture.</p>
+                        <div class="flex flex-wrap gap-2 mt-auto relative z-10">
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">AWS</span>
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">Docker</span>
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">CI/CD</span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Project 6 -->
+                <div class="fade-in-section delay-250">
+                    <a href="https://www.linkedin.com/posts/ayush-ku-sahu_dataengineering-databricks-spark-activity-7426599481413926912-GAwy?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ" target="_blank" rel="noopener noreferrer" class="group h-full flex flex-col bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-400 dark:hover:border-blue-500 overflow-hidden relative">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent dark:from-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div class="flex justify-between items-start mb-4 relative z-10">
+                            <span class="text-xs font-bold px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-blue-600 dark:text-blue-400 rounded-lg border border-slate-200 dark:border-slate-700 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 group-hover:border-blue-300 dark:group-hover:border-blue-700 transition-colors shadow-sm">Data Engineering</span>
+                            <div class="p-2 bg-slate-50 dark:bg-slate-800 rounded-full group-hover:bg-blue-50 dark:group-hover:bg-blue-900/40 transition-colors">
+                                <i data-lucide="external-link" class="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors group-hover:rotate-12"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-xl text-slate-800 dark:text-slate-200 group-hover:text-blue-700 dark:group-hover:text-blue-400 mb-3 leading-tight relative z-10 transition-colors">Data Engineering with Databricks & Spark</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 mb-8 font-medium group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors relative z-10">Click to view detailed project documentation and architecture.</p>
+                        <div class="flex flex-wrap gap-2 mt-auto relative z-10">
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">Databricks</span>
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">PySpark</span>
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">Python</span>
+                        </div>
+                    </a>
                 </div>
                 
-                <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm p-3 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl hover:shadow-2xl transition-shadow hover:border-blue-300 dark:hover:border-slate-600">
-                  <div className="aspect-video w-full relative rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-100 dark:border-slate-800">
-                    {/* PowerBI Iframe Embed */}
-                    <iframe 
-                      title="Main Power BI Dashboard" 
-                      src="https://app.powerbi.com/view?r=eyJrIjoiYTIxMzRlM2QtODI0OC00Yzc0LTk5N2ItZTNiNDgzNGY0Y2NjIiwidCI6ImM2ZTU0OWIzLTVmNDUtNDAzMi1hYWU5LWQ0MjQ0ZGM1YjJjNCJ9" 
-                      allowFullScreen={true} 
-                      className="absolute top-0 left-0 w-full h-full border-0"
-                    ></iframe>
-                  </div>
+                <!-- Project 7 -->
+                <div class="fade-in-section delay-0">
+                    <a href="https://www.linkedin.com/posts/ayush-ku-sahu_dataengineering-firstprinciples-python-activity-7430408372828454912-UhoQ?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ" target="_blank" rel="noopener noreferrer" class="group h-full flex flex-col bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-400 dark:hover:border-blue-500 overflow-hidden relative">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent dark:from-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div class="flex justify-between items-start mb-4 relative z-10">
+                            <span class="text-xs font-bold px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-blue-600 dark:text-blue-400 rounded-lg border border-slate-200 dark:border-slate-700 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 group-hover:border-blue-300 dark:group-hover:border-blue-700 transition-colors shadow-sm">Data Engineering</span>
+                            <div class="p-2 bg-slate-50 dark:bg-slate-800 rounded-full group-hover:bg-blue-50 dark:group-hover:bg-blue-900/40 transition-colors">
+                                <i data-lucide="external-link" class="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors group-hover:rotate-12"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-xl text-slate-800 dark:text-slate-200 group-hover:text-blue-700 dark:group-hover:text-blue-400 mb-3 leading-tight relative z-10 transition-colors">Data Engineering First Principles in Python</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 mb-8 font-medium group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors relative z-10">Click to view detailed project documentation and architecture.</p>
+                        <div class="flex flex-wrap gap-2 mt-auto relative z-10">
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">Python</span>
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">Pandas</span>
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">SQLAlchemy</span>
+                        </div>
+                    </a>
                 </div>
-              </section>
-            </FadeInSection>
 
-            {/* Other Live Dashboards Grid */}
-            <FadeInSection delay={100}>
-              <section>
-                <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-8">More Live Analytics Links</h3>
-                <div className="grid md:grid-cols-2 gap-8">
-                  {liveDashboards.map((dash, idx) => (
-                    <div key={idx} className="group bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 shadow-lg hover:shadow-xl rounded-2xl p-8 flex flex-col justify-between hover:border-blue-400 dark:hover:border-blue-500 transition-all hover:-translate-y-2 relative overflow-hidden">
-                      {/* Hover gradient background effect */}
-                      <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent dark:from-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <!-- Project 8 -->
+                <div class="fade-in-section delay-50">
+                    <a href="https://www.linkedin.com/posts/ayush-ku-sahu_vendor-data-analysis-i-recently-completed-activity-7396481664593362944-YkX5?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ" target="_blank" rel="noopener noreferrer" class="group h-full flex flex-col bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-400 dark:hover:border-blue-500 overflow-hidden relative">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent dark:from-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div class="flex justify-between items-start mb-4 relative z-10">
+                            <span class="text-xs font-bold px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-blue-600 dark:text-blue-400 rounded-lg border border-slate-200 dark:border-slate-700 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 group-hover:border-blue-300 dark:group-hover:border-blue-700 transition-colors shadow-sm">Analytics</span>
+                            <div class="p-2 bg-slate-50 dark:bg-slate-800 rounded-full group-hover:bg-blue-50 dark:group-hover:bg-blue-900/40 transition-colors">
+                                <i data-lucide="external-link" class="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors group-hover:rotate-12"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-xl text-slate-800 dark:text-slate-200 group-hover:text-blue-700 dark:group-hover:text-blue-400 mb-3 leading-tight relative z-10 transition-colors">Vendor Performance Analytics</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 mb-8 font-medium group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors relative z-10">Click to view detailed project documentation and architecture.</p>
+                        <div class="flex flex-wrap gap-2 mt-auto relative z-10">
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">Power BI</span>
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">DAX</span>
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">SQL</span>
+                        </div>
+                    </a>
+                </div>
 
-                      <div className="relative z-10">
-                        <h4 className="font-bold text-xl text-slate-800 dark:text-slate-200 mb-3 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">{dash.title}</h4>
-                        <p className="text-sm text-slate-500 dark:text-slate-400 font-medium mb-6">Interactive data visualization and business insights tracking key metrics.</p>
-                        
-                        {/* Render Tech Stack Tags for Dashboards */}
-                        {dash.techStack && (
-                          <div className="flex flex-wrap gap-2 mb-8">
-                            {dash.techStack.map((tech, i) => (
-                              <span key={i} className="px-2.5 py-1 bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-blue-200 dark:group-hover:border-blue-800/50 transition-colors">
-                                {tech}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex gap-4 mt-auto relative z-10">
-                        <a 
-                          href={dash.link} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="flex-1 flex items-center justify-center gap-2 bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white py-3 px-4 rounded-xl text-sm font-bold transition-all shadow-md hover:shadow-lg active:scale-95"
-                        >
-                          <LineChart className="w-4 h-4" /> Live Dashboard
-                        </a>
-                        <a 
-                          href={dash.post} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="flex-1 flex items-center justify-center gap-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 py-3 px-4 rounded-xl text-sm font-bold transition-all border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md active:scale-95 group/btn"
-                        >
-                          <Linkedin className="w-4 h-4 text-blue-600 dark:text-blue-400 group-hover/btn:scale-110 transition-transform" /> LinkedIn Post
-                        </a>
-                      </div>
+                <!-- Project 9 -->
+                <div class="fade-in-section delay-100">
+                    <a href="https://www.linkedin.com/posts/ayush-ku-sahu_dataanalytics-telecomstrategy-powerquery-activity-7398515931225812992-oFvI?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ" target="_blank" rel="noopener noreferrer" class="group h-full flex flex-col bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-400 dark:hover:border-blue-500 overflow-hidden relative">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent dark:from-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div class="flex justify-between items-start mb-4 relative z-10">
+                            <span class="text-xs font-bold px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-blue-600 dark:text-blue-400 rounded-lg border border-slate-200 dark:border-slate-700 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 group-hover:border-blue-300 dark:group-hover:border-blue-700 transition-colors shadow-sm">Analytics</span>
+                            <div class="p-2 bg-slate-50 dark:bg-slate-800 rounded-full group-hover:bg-blue-50 dark:group-hover:bg-blue-900/40 transition-colors">
+                                <i data-lucide="external-link" class="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors group-hover:rotate-12"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-xl text-slate-800 dark:text-slate-200 group-hover:text-blue-700 dark:group-hover:text-blue-400 mb-3 leading-tight relative z-10 transition-colors">Telecom Strategy Analytics</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 mb-8 font-medium group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors relative z-10">Click to view detailed project documentation and architecture.</p>
+                        <div class="flex flex-wrap gap-2 mt-auto relative z-10">
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">Power BI</span>
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">Power Query</span>
+                        </div>
+                    </a>
+                </div>
+
+                 <!-- Project 10 -->
+                <div class="fade-in-section delay-150">
+                    <a href="https://www.linkedin.com/posts/ayush-ku-sahu_dataanalytics-powerbi-businessintelligence-activity-7400807941794365440-6KlT?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ" target="_blank" rel="noopener noreferrer" class="group h-full flex flex-col bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-400 dark:hover:border-blue-500 overflow-hidden relative">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent dark:from-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div class="flex justify-between items-start mb-4 relative z-10">
+                            <span class="text-xs font-bold px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-blue-600 dark:text-blue-400 rounded-lg border border-slate-200 dark:border-slate-700 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 group-hover:border-blue-300 dark:group-hover:border-blue-700 transition-colors shadow-sm">Analytics</span>
+                            <div class="p-2 bg-slate-50 dark:bg-slate-800 rounded-full group-hover:bg-blue-50 dark:group-hover:bg-blue-900/40 transition-colors">
+                                <i data-lucide="external-link" class="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors group-hover:rotate-12"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-xl text-slate-800 dark:text-slate-200 group-hover:text-blue-700 dark:group-hover:text-blue-400 mb-3 leading-tight relative z-10 transition-colors">Business Intelligence Dashboard (Initial)</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 mb-8 font-medium group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors relative z-10">Click to view detailed project documentation and architecture.</p>
+                        <div class="flex flex-wrap gap-2 mt-auto relative z-10">
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">Power BI</span>
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">DAX</span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Project 11 -->
+                <div class="fade-in-section delay-200">
+                    <a href="https://github.com/EAZY-647/E-Commerce-Inventory-Analytics" target="_blank" rel="noopener noreferrer" class="group h-full flex flex-col bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-400 dark:hover:border-blue-500 overflow-hidden relative">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent dark:from-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div class="flex justify-between items-start mb-4 relative z-10">
+                            <span class="text-xs font-bold px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-blue-600 dark:text-blue-400 rounded-lg border border-slate-200 dark:border-slate-700 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 group-hover:border-blue-300 dark:group-hover:border-blue-700 transition-colors shadow-sm">GitHub Repository</span>
+                            <div class="p-2 bg-slate-50 dark:bg-slate-800 rounded-full group-hover:bg-blue-50 dark:group-hover:bg-blue-900/40 transition-colors">
+                                <i data-lucide="external-link" class="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors group-hover:rotate-12"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-xl text-slate-800 dark:text-slate-200 group-hover:text-blue-700 dark:group-hover:text-blue-400 mb-3 leading-tight relative z-10 transition-colors">E-Commerce Inventory Analytics</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 mb-8 font-medium group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors relative z-10">Click to view detailed project documentation and architecture.</p>
+                        <div class="flex flex-wrap gap-2 mt-auto relative z-10">
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">Python</span>
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">Pandas</span>
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">SQL</span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Project 12 -->
+                <div class="fade-in-section delay-250">
+                    <a href="https://github.com/EAZY-647/customer_shopping_anlyasis" target="_blank" rel="noopener noreferrer" class="group h-full flex flex-col bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-400 dark:hover:border-blue-500 overflow-hidden relative">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent dark:from-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div class="flex justify-between items-start mb-4 relative z-10">
+                            <span class="text-xs font-bold px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-blue-600 dark:text-blue-400 rounded-lg border border-slate-200 dark:border-slate-700 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 group-hover:border-blue-300 dark:group-hover:border-blue-700 transition-colors shadow-sm">GitHub Repository</span>
+                            <div class="p-2 bg-slate-50 dark:bg-slate-800 rounded-full group-hover:bg-blue-50 dark:group-hover:bg-blue-900/40 transition-colors">
+                                <i data-lucide="external-link" class="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors group-hover:rotate-12"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-xl text-slate-800 dark:text-slate-200 group-hover:text-blue-700 dark:group-hover:text-blue-400 mb-3 leading-tight relative z-10 transition-colors">Customer Shopping Analysis</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 mb-8 font-medium group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors relative z-10">Click to view detailed project documentation and architecture.</p>
+                        <div class="flex flex-wrap gap-2 mt-auto relative z-10">
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">Python</span>
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">EDA</span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Project 13 -->
+                <div class="fade-in-section delay-300">
+                    <a href="https://github.com/EAZY-647/healthedgeai" target="_blank" rel="noopener noreferrer" class="group h-full flex flex-col bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-400 dark:hover:border-blue-500 overflow-hidden relative">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent dark:from-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div class="flex justify-between items-start mb-4 relative z-10">
+                            <span class="text-xs font-bold px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-blue-600 dark:text-blue-400 rounded-lg border border-slate-200 dark:border-slate-700 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 group-hover:border-blue-300 dark:group-hover:border-blue-700 transition-colors shadow-sm">GitHub Repository</span>
+                            <div class="p-2 bg-slate-50 dark:bg-slate-800 rounded-full group-hover:bg-blue-50 dark:group-hover:bg-blue-900/40 transition-colors">
+                                <i data-lucide="external-link" class="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors group-hover:rotate-12"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-xl text-slate-800 dark:text-slate-200 group-hover:text-blue-700 dark:group-hover:text-blue-400 mb-3 leading-tight relative z-10 transition-colors">HealthEdgeAI</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 mb-8 font-medium group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors relative z-10">Click to view detailed project documentation and architecture.</p>
+                        <div class="flex flex-wrap gap-2 mt-auto relative z-10">
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">Python</span>
+                            <span class="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">Machine Learning</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: DASHBOARDS -->
+        <div id="dashboards" class="space-y-12 scroll-mt-24 pt-12 border-t border-slate-200 dark:border-slate-800">
+            
+            <!-- Featured Interactive Dashboard -->
+            <div class="fade-in-section">
+                <section class="space-y-6">
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-3">
+                                <i data-lucide="line-chart" class="w-8 h-8 text-blue-500"></i> Featured Interactive Dashboard
+                            </h2>
+                            <p class="text-slate-600 dark:text-slate-400 text-lg">Fully interactive Business Intelligence reporting tool built with Power BI.</p>
+                        </div>
                     </div>
-                  ))}
-                </div>
-              </section>
-            </FadeInSection>
-          </div>
-        </main>
+                    
+                    <div class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm p-3 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl hover:shadow-2xl transition-shadow hover:border-blue-300 dark:hover:border-slate-600">
+                        <div class="aspect-video w-full relative rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-100 dark:border-slate-800">
+                            <iframe 
+                                title="Main Power BI Dashboard" 
+                                src="https://app.powerbi.com/view?r=eyJrIjoiYTIxMzRlM2QtODI0OC00Yzc0LTk5N2ItZTNiNDgzNGY0Y2NjIiwidCI6ImM2ZTU0OWIzLTVmNDUtNDAzMi1hYWU5LWQ0MjQ0ZGM1YjJjNCJ9" 
+                                allowfullscreen="true" 
+                                class="absolute top-0 left-0 w-full h-full border-0"
+                            ></iframe>
+                        </div>
+                    </div>
+                </section>
+            </div>
 
-        {/* FOOTER */}
-        <footer className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 py-8 mt-12 text-center transition-colors duration-300">
-          <div className="max-w-6xl mx-auto px-6 text-slate-500 dark:text-slate-400 text-sm font-medium">
-            <p>© {new Date().getFullYear()} Ayush Kumar Sahu. All rights reserved.</p>
-            <p className="mt-2 text-slate-400 dark:text-slate-500">Built for Data Engineering & Analytics excellence.</p>
-          </div>
-        </footer>
-      </div>
-    </div>
-  );
-}
+            <!-- Other Live Dashboards Grid -->
+            <div class="fade-in-section delay-100">
+                <section>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-8">More Live Analytics Links</h3>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        
+                        <!-- Dashboard 1 -->
+                        <div class="group bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 shadow-lg hover:shadow-xl rounded-2xl p-8 flex flex-col justify-between hover:border-blue-400 dark:hover:border-blue-500 transition-all hover:-translate-y-2 relative overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent dark:from-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            <div class="relative z-10">
+                                <h4 class="font-bold text-xl text-slate-800 dark:text-slate-200 mb-3 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">Business Intelligence / Power BI Dashboard</h4>
+                                <p class="text-sm text-slate-500 dark:text-slate-400 font-medium mb-6">Interactive data visualization and business insights tracking key metrics.</p>
+                                <div class="flex flex-wrap gap-2 mb-8">
+                                    <span class="px-2.5 py-1 bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">Power BI</span>
+                                    <span class="px-2.5 py-1 bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">DAX</span>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 mt-auto relative z-10">
+                                <a href="https://lnkd.in/gNn-wDQZ" target="_blank" rel="noopener noreferrer" class="flex-1 flex items-center justify-center gap-2 bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white py-3 px-4 rounded-xl text-sm font-bold transition-all shadow-md hover:shadow-lg active:scale-95">
+                                    <i data-lucide="line-chart" class="w-4 h-4"></i> Live Dashboard
+                                </a>
+                                <a href="https://www.linkedin.com/posts/ayush-ku-sahu_dataanalyst-businessintelligence-powerbi-activity-7421240683233091584-N9UP?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ" target="_blank" rel="noopener noreferrer" class="flex-1 flex items-center justify-center gap-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 py-3 px-4 rounded-xl text-sm font-bold transition-all border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md active:scale-95 group/btn">
+                                    <i data-lucide="linkedin" class="w-4 h-4 text-blue-600 dark:text-blue-400 group-hover/btn:scale-110 transition-transform"></i> LinkedIn Post
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Dashboard 2 -->
+                        <div class="group bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 shadow-lg hover:shadow-xl rounded-2xl p-8 flex flex-col justify-between hover:border-blue-400 dark:hover:border-blue-500 transition-all hover:-translate-y-2 relative overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent dark:from-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            <div class="relative z-10">
+                                <h4 class="font-bold text-xl text-slate-800 dark:text-slate-200 mb-3 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">Sales Dashboard</h4>
+                                <p class="text-sm text-slate-500 dark:text-slate-400 font-medium mb-6">Interactive data visualization and business insights tracking key metrics.</p>
+                                <div class="flex flex-wrap gap-2 mb-8">
+                                    <span class="px-2.5 py-1 bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">Power BI</span>
+                                    <span class="px-2.5 py-1 bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">Data Modeling</span>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 mt-auto relative z-10">
+                                <a href="https://lnkd.in/eRQMhRqx" target="_blank" rel="noopener noreferrer" class="flex-1 flex items-center justify-center gap-2 bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white py-3 px-4 rounded-xl text-sm font-bold transition-all shadow-md hover:shadow-lg active:scale-95">
+                                    <i data-lucide="line-chart" class="w-4 h-4"></i> Live Dashboard
+                                </a>
+                                <a href="https://www.linkedin.com/posts/ayush-ku-sahu_powerbi-dataanalytics-salesdashboard-activity-7414954730789064704-LpDQ?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ" target="_blank" rel="noopener noreferrer" class="flex-1 flex items-center justify-center gap-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 py-3 px-4 rounded-xl text-sm font-bold transition-all border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md active:scale-95 group/btn">
+                                    <i data-lucide="linkedin" class="w-4 h-4 text-blue-600 dark:text-blue-400 group-hover/btn:scale-110 transition-transform"></i> LinkedIn Post
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Dashboard 3 -->
+                        <div class="group bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 shadow-lg hover:shadow-xl rounded-2xl p-8 flex flex-col justify-between hover:border-blue-400 dark:hover:border-blue-500 transition-all hover:-translate-y-2 relative overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent dark:from-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            <div class="relative z-10">
+                                <h4 class="font-bold text-xl text-slate-800 dark:text-slate-200 mb-3 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">Insurance Analysis Dashboard</h4>
+                                <p class="text-sm text-slate-500 dark:text-slate-400 font-medium mb-6">Interactive data visualization and business insights tracking key metrics.</p>
+                                <div class="flex flex-wrap gap-2 mb-8">
+                                    <span class="px-2.5 py-1 bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">Power BI</span>
+                                    <span class="px-2.5 py-1 bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">SQL</span>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 mt-auto relative z-10">
+                                <a href="https://lnkd.in/eDH6rg43" target="_blank" rel="noopener noreferrer" class="flex-1 flex items-center justify-center gap-2 bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white py-3 px-4 rounded-xl text-sm font-bold transition-all shadow-md hover:shadow-lg active:scale-95">
+                                    <i data-lucide="line-chart" class="w-4 h-4"></i> Live Dashboard
+                                </a>
+                                <a href="https://www.linkedin.com/posts/ayush-ku-sahu_dataanalytics-businessintelligence-insuranceanalysis-activity-7412615371779690497-ZUBX?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ" target="_blank" rel="noopener noreferrer" class="flex-1 flex items-center justify-center gap-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 py-3 px-4 rounded-xl text-sm font-bold transition-all border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md active:scale-95 group/btn">
+                                    <i data-lucide="linkedin" class="w-4 h-4 text-blue-600 dark:text-blue-400 group-hover/btn:scale-110 transition-transform"></i> LinkedIn Post
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Dashboard 4 -->
+                        <div class="group bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 shadow-lg hover:shadow-xl rounded-2xl p-8 flex flex-col justify-between hover:border-blue-400 dark:hover:border-blue-500 transition-all hover:-translate-y-2 relative overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent dark:from-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            <div class="relative z-10">
+                                <h4 class="font-bold text-xl text-slate-800 dark:text-slate-200 mb-3 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">Healthcare Innovation Dashboard</h4>
+                                <p class="text-sm text-slate-500 dark:text-slate-400 font-medium mb-6">Interactive data visualization and business insights tracking key metrics.</p>
+                                <div class="flex flex-wrap gap-2 mb-8">
+                                    <span class="px-2.5 py-1 bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">Power BI</span>
+                                    <span class="px-2.5 py-1 bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm">DAX</span>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 mt-auto relative z-10">
+                                <a href="https://lnkd.in/e_4JJ6hB" target="_blank" rel="noopener noreferrer" class="flex-1 flex items-center justify-center gap-2 bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white py-3 px-4 rounded-xl text-sm font-bold transition-all shadow-md hover:shadow-lg active:scale-95">
+                                    <i data-lucide="line-chart" class="w-4 h-4"></i> Live Dashboard
+                                </a>
+                                <a href="https://www.linkedin.com/posts/ayush-ku-sahu_dataanalytics-healthcareinnovation-powerbi-activity-7409928613812363266-eUAE?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ" target="_blank" rel="noopener noreferrer" class="flex-1 flex items-center justify-center gap-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 py-3 px-4 rounded-xl text-sm font-bold transition-all border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md active:scale-95 group/btn">
+                                    <i data-lucide="linkedin" class="w-4 h-4 text-blue-600 dark:text-blue-400 group-hover/btn:scale-110 transition-transform"></i> LinkedIn Post
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 py-8 mt-12 text-center transition-colors duration-300">
+        <div class="max-w-6xl mx-auto px-6 text-slate-500 dark:text-slate-400 text-sm font-medium">
+            <p>&copy; <span id="current-year"></span> Ayush Kumar Sahu. All rights reserved.</p>
+            <p class="mt-2 text-slate-400 dark:text-slate-500">Built for Data Engineering & Analytics excellence.</p>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE JAVASCRIPT LOGIC -->
+    <script>
+        // 1. Initialize Lucide Icons (This replaces the <IconName /> tags with actual SVG icons)
+        lucide.createIcons();
+
+        // 2. Set Current Year in Footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // 3. Dark Mode Toggle Logic
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeIconMoon = document.getElementById('theme-icon-moon');
+        const themeIconSun = document.getElementById('theme-icon-sun');
+        const htmlElement = document.documentElement;
+
+        // Check user's system preference on load
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            htmlElement.classList.add('dark');
+            themeIconMoon.classList.add('hidden');
+            themeIconSun.classList.remove('hidden');
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            htmlElement.classList.toggle('dark');
+            
+            // Swap icons depending on state
+            if (htmlElement.classList.contains('dark')) {
+                themeIconMoon.classList.add('hidden');
+                themeIconSun.classList.remove('hidden');
+            } else {
+                themeIconMoon.classList.remove('hidden');
+                themeIconSun.classList.add('hidden');
+            }
+        });
+
+        // 4. Scroll Animation Observer (Makes elements slide up when scrolling)
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    // Optional: Stop observing once it's visible so it doesn't animate again
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Find all elements with the 'fade-in-section' class and tell the observer to watch them
+        document.querySelectorAll('.fade-in-section').forEach((section) => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
