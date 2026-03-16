@@ -1,698 +1,461 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ayush Kumar Sahu | Data Portfolio</title>
-    <style>
-        /* --- CORE VARIABLES (Colors & Theme) --- */
-        :root {
-            --primary: #0d9488; /* Teal */
-            --primary-light: #ccfbf1;
-            --primary-hover: #0f766e;
-            --bg-body: #f9fafb;
-            --bg-card: #ffffff;
-            --text-main: #111827;
-            --text-muted: #4b5563;
-            --border: #e5e7eb;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --gold: #d97706;
-            --gold-light: #fef3c7;
+import React, { useState, useEffect, useRef } from 'react';
+import { 
+  Github, 
+  Linkedin, 
+  Mail, 
+  MapPin, 
+  Briefcase, 
+  GraduationCap, 
+  Code, 
+  Database, 
+  LineChart, 
+  Server, 
+  Award, 
+  ExternalLink,
+  Terminal,
+  Moon,
+  Sun
+} from 'lucide-react';
+
+// --- CUSTOM ANIMATION COMPONENTS ---
+const FadeInSection = ({ children, delay = 0 }) => {
+  const [isVisible, setVisible] = useState(false);
+  const domRef = useRef();
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.unobserve(entry.target);
         }
+      });
+    });
+    const currentRef = domRef.current;
+    if (currentRef) observer.observe(currentRef);
+    return () => {
+      if (currentRef) observer.unobserve(currentRef);
+    };
+  }, []);
 
-        /* Dark Mode Variables */
-        body.dark-mode {
-            --bg-body: #0f172a;
-            --bg-card: #1e293b;
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
-            --border: #334155;
-            --primary-light: rgba(13, 148, 136, 0.2);
-            --gold: #fbbf24;
-            --gold-light: rgba(251, 191, 36, 0.1);
-        }
-
-        /* --- GLOBAL STYLES --- */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            line-height: 1.6;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        a { text-decoration: none; color: inherit; transition: color 0.2s; }
-        ul { list-style: none; }
-        img { max-width: 100%; display: block; }
-        
-        /* Layout Utilities */
-        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
-        .section { padding: 80px 0; }
-        .flex { display: flex; align-items: center; }
-        .flex-col { flex-direction: column; }
-        .justify-between { justify-content: space-between; }
-        .justify-center { justify-content: center; }
-        .gap-2 { gap: 10px; }
-        .gap-4 { gap: 20px; }
-        .grid { display: grid; gap: 25px; }
-        .grid-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
-        .grid-3 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
-        .text-center { text-align: center; }
-        .hidden { display: none !important; }
-
-        /* --- COMPONENTS --- */
-        
-        /* Buttons */
-        .btn {
-            display: inline-flex; align-items: center; justify-content: center;
-            padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none;
-            transition: transform 0.1s, box-shadow 0.2s;
-        }
-        .btn:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
-        .btn-primary { background-color: var(--primary); color: white; }
-        .btn-primary:hover { background-color: var(--primary-hover); }
-        .btn-outline { border: 1px solid var(--border); background: var(--bg-card); color: var(--text-muted); }
-        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
-        .btn-icon { padding: 8px; border-radius: 50%; background: var(--border); color: var(--text-muted); }
-
-        /* Navigation */
-        nav {
-            position: fixed; top: 0; width: 100%; height: 70px;
-            background-color: var(--bg-card); border-bottom: 1px solid var(--border);
-            z-index: 1000; display: flex; align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        .nav-inner { display: flex; justify-content: space-between; width: 100%; align-items: center; }
-        .logo { font-size: 1.5rem; font-weight: bold; color: var(--primary); cursor: pointer; }
-        .nav-links a { margin-left: 25px; font-weight: 500; color: var(--text-muted); font-size: 0.95rem; }
-        .nav-links a:hover { color: var(--primary); }
-
-        /* Hero Section */
-        .hero { padding-top: 140px; padding-bottom: 80px; }
-        .badge {
-            display: inline-block; padding: 4px 12px; font-size: 0.75rem; font-weight: bold;
-            text-transform: uppercase; letter-spacing: 1px; color: var(--primary);
-            background: var(--primary-light); border-radius: 20px; margin-bottom: 20px;
-        }
-        .hero h1 { font-size: 3rem; margin-bottom: 20px; line-height: 1.2; }
-        .hero p { font-size: 1.25rem; color: var(--text-muted); margin-bottom: 30px; font-weight: 300; }
-        .hero-visual {
-            width: 300px; height: 300px; border-radius: 50%;
-            background: var(--bg-card); border: 4px solid var(--primary-light);
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: var(--shadow); position: relative;
-        }
-        .hero-visual svg { width: 80px; height: 80px; color: var(--primary); }
-
-        /* Cards (Skills, Projects, etc) */
-        .card {
-            background: var(--bg-card); border: 1px solid var(--border);
-            border-radius: 12px; padding: 25px; transition: transform 0.2s, border-color 0.2s;
-        }
-        .card:hover { transform: translateY(-3px); border-color: var(--primary); box-shadow: var(--shadow); }
-        .card-header { display: flex; align-items: center; margin-bottom: 15px; color: var(--primary); }
-        .card-header h3 { color: var(--text-main); margin-left: 10px; font-size: 1.1rem; }
-        
-        /* Cert Card Specifics */
-        .cert-card {
-            display: flex; align-items: start; gap: 15px;
-            background: var(--bg-card); border: 1px solid var(--border);
-            border-radius: 12px; padding: 20px; transition: all 0.2s ease;
-        }
-        .cert-card:hover {
-            transform: translateY(-3px);
-            border-color: var(--primary);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-        .cert-icon {
-            flex-shrink: 0; width: 40px; height: 40px;
-            background: var(--gold-light); color: var(--gold);
-            border-radius: 8px; display: flex; align-items: center; justify-content: center;
-        }
-        .cert-info h4 { font-size: 0.95rem; font-weight: 700; line-height: 1.4; margin-bottom: 6px; }
-        .cert-provider {
-            display: inline-block; font-size: 0.75rem; font-weight: 600;
-            background: var(--border); color: var(--text-muted);
-            padding: 2px 8px; border-radius: 4px;
-        }
-
-        /* Tags */
-        .tags { display: flex; flex-wrap: wrap; gap: 8px; }
-        .tag {
-            font-size: 0.8rem; padding: 4px 10px; border-radius: 4px;
-            background: var(--border); color: var(--text-muted); font-family: monospace;
-        }
-
-        /* Timeline (Experience) */
-        .timeline-item {
-            position: relative; padding-left: 30px; border-left: 2px solid var(--border); margin-bottom: 40px;
-        }
-        .timeline-dot {
-            position: absolute; left: -6px; top: 0; width: 10px; height: 10px;
-            background: var(--primary); border-radius: 50%;
-        }
-        .timeline-date {
-            display: inline-block; font-size: 0.8rem; font-weight: bold; padding: 2px 8px;
-            background: var(--primary-light); color: var(--primary); border-radius: 4px; margin-bottom: 8px;
-        }
-
-        /* Modal (Resume) */
-        .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000;
-            display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px);
-        }
-        .modal-content {
-            background: white; width: 90%; max-width: 800px; max-height: 90vh;
-            border-radius: 12px; overflow-y: auto; color: #111827;
-        }
-        .modal-header {
-            position: sticky; top: 0; background: white; border-bottom: 1px solid #e5e7eb;
-            padding: 15px 25px; display: flex; justify-content: space-between; align-items: center;
-        }
-        .resume-body { padding: 40px; }
-        .resume-section { margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
-        .resume-section h2 { font-size: 1.2rem; text-transform: uppercase; margin-bottom: 15px; color: #333; }
-        
-        /* Print Specifics */
-        @media print {
-            body > *:not(#resume-modal) { display: none; }
-            #resume-modal { display: block !important; position: absolute; top: 0; left: 0; width: 100%; }
-            .modal-content { box-shadow: none; max-width: 100%; width: 100%; }
-            .modal-header { display: none; }
-            .modal-overlay { background: white; position: static; }
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero { flex-direction: column; text-align: center; padding-top: 100px; }
-            .md-hidden { display: none; }
-            .hero-visual { margin-top: 40px; width: 200px; height: 200px; }
-            .hero h1 { font-size: 2rem; }
-            .grid-3 { grid-template-columns: 1fr; } 
-        }
-    </style>
-</head>
-<body>
-
-    <!-- NAV -->
-    <nav>
-        <div class="container nav-inner">
-            <div class="logo" onclick="window.scrollTo(0,0)">AKS.Data</div>
-            <div class="nav-links md-hidden">
-                <a href="#about">About</a>
-                <a href="#skills">Skills</a>
-                <a href="#experience">Experience</a>
-                <a href="#projects">Projects</a>
-                <a href="#dashboard">Dashboard</a>
-            </div>
-            <div class="flex gap-2">
-                <button class="btn btn-icon" id="theme-btn" title="Toggle Theme">
-                    <!-- Moon Icon -->
-                    <svg id="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-                    <!-- Sun Icon (Hidden by default) -->
-                    <svg id="sun-icon" class="hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                </button>
-                <button class="btn btn-primary" onclick="toggleModal(true)">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                    Resume
-                </button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- HERO -->
-    <section id="home" class="container hero flex justify-between">
-        <div>
-            <div class="badge">Available for Opportunities</div>
-            <h1>Hi, I'm <span style="color:var(--primary)">Ayush Kumar Sahu</span></h1>
-            <p>Data Analyst | Data Engineer | M.Sc. Big Data Science.<br>Turning raw data into actionable insights.</p>
-            <div class="flex gap-4" style="flex-wrap: wrap; justify-content: center;">
-                <a href="mailto:ayushkusahuk@gmail.com" class="btn btn-primary">Contact Me</a>
-                <a href="https://www.linkedin.com/in/ayush-ku-sahu/" target="_blank" class="btn btn-outline">LinkedIn</a>
-                <a href="https://github.com/EAZY-647?tab=repositories" target="_blank" class="btn btn-outline">GitHub</a>
-            </div>
-            <div style="margin-top:20px; font-size:0.9rem; color:var(--text-muted);">
-                📍 London, United Kingdom
-            </div>
-        </div>
-        <div class="hero-visual">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
-        </div>
-    </section>
-
-    <!-- ABOUT -->
-    <section id="about" class="section" style="background-color:var(--bg-card); border-top:1px solid var(--border);">
-        <div class="container">
-            <h2 class="text-center" style="margin-bottom:20px; font-size:2rem;">About Me</h2>
-            <div style="max-width:800px; margin:0 auto; text-align:center; font-size:1.1rem; color:var(--text-muted);">
-                <p>I am a results-driven Data professional with a strong foundation in both Data Engineering and Analytics. With a Master's in Big Data Science and hands-on experience in building real-time pipelines and predictive models, I bridge the gap between complex data infrastructure and actionable business insights.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- SKILLS -->
-    <section id="skills" class="section">
-        <div class="container">
-            <h2 class="text-center" style="margin-bottom:40px; font-size:2rem;">Technical Expertise</h2>
-            <div class="grid grid-3">
-                <!-- Card -->
-                <div class="card">
-                    <div class="card-header">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
-                        <h3>Data Engineering</h3>
-                    </div>
-                    <div class="tags">
-                        <span class="tag">Spark</span><span class="tag">Kafka</span><span class="tag">Hadoop</span><span class="tag">Airflow</span><span class="tag">dbt</span><span class="tag">Snowflake</span>
-                    </div>
-                </div>
-                <!-- Card -->
-                <div class="card">
-                    <div class="card-header">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-                        <h3>Analytics</h3>
-                    </div>
-                    <div class="tags">
-                        <span class="tag">Power BI</span><span class="tag">Tableau</span><span class="tag">Excel</span><span class="tag">Google Analytics</span>
-                    </div>
-                </div>
-                <!-- Card -->
-                <div class="card">
-                    <div class="card-header">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-                        <h3>Programming</h3>
-                    </div>
-                    <div class="tags">
-                        <span class="tag">Python</span><span class="tag">SQL</span><span class="tag">Java</span><span class="tag">Scala</span><span class="tag">Shell</span>
-                    </div>
-                </div>
-                <!-- Card -->
-                <div class="card">
-                    <div class="card-header">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
-                        <h3>DevOps & Cloud</h3>
-                    </div>
-                    <div class="tags">
-                        <span class="tag">AWS</span><span class="tag">Azure</span><span class="tag">Docker</span><span class="tag">K8s</span><span class="tag">Terraform</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div style="margin-top:50px; text-align:center;">
-                <h3>GitHub Activity</h3>
-                <div style="overflow-x: auto; margin-top:20px; padding: 10px; background: white; border-radius: 8px; border: 1px solid var(--border);">
-                    <img src="https://ghchart.rshah.org/14b8a6/EAZY-647" alt="Github Chart" style="min-width: 600px; margin: 0 auto;">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- EXPERIENCE -->
-    <section id="experience" class="section">
-        <div class="container" style="max-width: 800px;">
-            <h2 class="text-center" style="margin-bottom:40px; font-size:2rem;">Experience</h2>
-            
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-date">Sep 2023 – Jan 2024</div>
-                <h3>Data Analyst Intern <span style="font-weight:normal; font-size:0.9rem; color:var(--text-muted);">| Corizo (Remote)</span></h3>
-                <p style="margin-top:5px; color:var(--text-muted);">Focused on SQL, Excel, and Power BI.</p>
-                <p style="margin-top:5px; font-size:0.9rem;"><strong>Key Achievement:</strong> Drove 10% improvement in operational decision-making efficiency.</p>
-            </div>
-
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-date">Apr 2023 – Jul 2023</div>
-                <h3>Data Science Intern <span style="font-weight:normal; font-size:0.9rem; color:var(--text-muted);">| Rubixe (On-site)</span></h3>
-                <p style="margin-top:5px; color:var(--text-muted);">Focused on ML models using Scikit-learn and Python.</p>
-                <p style="margin-top:5px; font-size:0.9rem;"><strong>Key Achievement:</strong> Enhanced predictive accuracy by 20% for inventory forecasting.</p>
-            </div>
-
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-date">Jan 2022 – Jul 2022</div>
-                <h3>DevOps Intern <span style="font-weight:normal; font-size:0.9rem; color:var(--text-muted);">| Prodevans (Remote)</span></h3>
-                <p style="margin-top:5px; color:var(--text-muted);">Focused on AWS, Linux automation, and Docker.</p>
-                <p style="margin-top:5px; font-size:0.9rem;"><strong>Key Achievement:</strong> Reduced deployment times by 40% using CI/CD.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- PROJECTS -->
-    <section id="projects" class="section" style="background-color:var(--bg-card);">
-        <div class="container">
-            <h2 class="text-center" style="margin-bottom:40px; font-size:2rem;">Featured Projects</h2>
-            <div class="grid grid-2">
-                
-                <div class="card">
-                    <h3>End-to-End Stock Market Data Pipeline</h3>
-                    <p style="margin:10px 0; color:var(--text-muted);">Engineered a real-time data pipeline for financial data ingestion using Kafka and Snowflake.</p>
-                    <div class="tags" style="margin-bottom:15px;">
-                        <span class="tag">Power BI</span><span class="tag">Kafka</span><span class="tag">Snowflake</span>
-                    </div>
-                    <a href="https://www.linkedin.com/posts/ayush-ku-sahu_dataengineering-apachekafka-snowflake-activity-7402961976290869248-kDjR?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ" target="_blank" style="color:var(--primary); font-weight:bold;">View Project &rarr;</a>
-                </div>
-
-                <div class="card">
-                    <h3>Vendor Performance Analytics</h3>
-                    <p style="margin:10px 0; color:var(--text-muted);">Advanced statistical analysis and hypothesis testing to optimize supply chain costs.</p>
-                    <div class="tags" style="margin-bottom:15px;">
-                        <span class="tag">Python</span><span class="tag">SQL</span><span class="tag">Power BI</span>
-                    </div>
-                    <a href="https://www.linkedin.com/posts/ayush-ku-sahu_vendor-data-analysis-i-recently-completed-activity-7396481664593362944-YkX5?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ" target="_blank" style="color:var(--primary); font-weight:bold;">View Project &rarr;</a>
-                </div>
-
-                <div class="card">
-                    <h3>Business Intelligence Dashboard</h3>
-                    <p style="margin:10px 0; color:var(--text-muted);">Comprehensive BI dashboards for actionable business insights.</p>
-                    <div class="tags" style="margin-bottom:15px;">
-                        <span class="tag">Power BI</span><span class="tag">DAX</span>
-                    </div>
-                    <a href="https://www.linkedin.com/posts/ayush-ku-sahu_dataanalytics-powerbi-businessintelligence-activity-7400807941794365440-6KlT?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ" target="_blank" style="color:var(--primary); font-weight:bold;">View Project &rarr;</a>
-                </div>
-
-                <div class="card">
-                    <h3>Telecom Strategy Analytics</h3>
-                    <p style="margin:10px 0; color:var(--text-muted);">Strategic analysis of telecom data using Power Query and Power BI to identify key growth areas.</p>
-                    <div class="tags" style="margin-bottom:15px;">
-                        <span class="tag">Power BI</span><span class="tag">Power Query</span>
-                    </div>
-                    <a href="https://www.linkedin.com/posts/ayush-ku-sahu_dataanalytics-telecomstrategy-powerquery-activity-7398515931225812992-oFvI?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ" target="_blank" style="color:var(--primary); font-weight:bold;">View Project &rarr;</a>
-                </div>
-
-                <div class="card">
-                    <h3>E-Commerce Inventory Analytics</h3>
-                    <p style="margin:10px 0; color:var(--text-muted);">Analyzed e-commerce inventory data to optimize stock levels and reduce holding costs.</p>
-                    <div class="tags" style="margin-bottom:15px;">
-                        <span class="tag">Python</span><span class="tag">Data Analysis</span>
-                    </div>
-                    <a href="https://github.com/EAZY-647/E-Commerce-Inventory-Analytics" target="_blank" style="color:var(--primary); font-weight:bold;">View Project &rarr;</a>
-                </div>
-
-                <div class="card">
-                    <h3>Customer Shopping Analysis</h3>
-                    <p style="margin:10px 0; color:var(--text-muted);">In-depth analysis of customer shopping patterns to drive marketing strategies.</p>
-                    <div class="tags" style="margin-bottom:15px;">
-                        <span class="tag">Python</span><span class="tag">Pandas</span>
-                    </div>
-                    <a href="https://github.com/EAZY-647/customer_shopping_anlyasis" target="_blank" style="color:var(--primary); font-weight:bold;">View Project &rarr;</a>
-                </div>
-
-                <div class="card">
-                    <h3>HealthEdgeAI</h3>
-                    <p style="margin:10px 0; color:var(--text-muted);">AI-driven solution focused on healthcare data analysis and predictive modeling.</p>
-                    <div class="tags" style="margin-bottom:15px;">
-                        <span class="tag">AI/ML</span><span class="tag">Python</span>
-                    </div>
-                    <a href="https://github.com/EAZY-647/healthedgeai" target="_blank" style="color:var(--primary); font-weight:bold;">View Project &rarr;</a>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- DASHBOARD -->
-    <section id="dashboard" class="section">
-        <div class="container text-center">
-            <h2 style="margin-bottom:20px; font-size:2rem;">Live Interactive Dashboard</h2>
-            <p style="margin-bottom:30px; color:var(--text-muted);">Interact with this Power BI report directly below.</p>
-            <div style="position:relative; width:100%; padding-bottom:56.25%; height:0; border:1px solid var(--border); border-radius:12px; overflow:hidden;">
-                <iframe title="Power BI Dashboard" src="https://app.powerbi.com/view?r=eyJrIjoiYTIxMzRlM2QtODI0OC00Yzc0LTk5N2ItZTNiNDgzNGY0Y2NjIiwidCI6ImM2ZTU0OWIzLTVmNDUtNDAzMi1hYWU5LWQ0MjQ0ZGM1YjJjNCJ9" allowFullScreen="true" style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;"></iframe>
-            </div>
-        </div>
-    </section>
-
-    <!-- EDUCATION & CERTS -->
-    <section class="section" style="background-color:var(--bg-card);">
-        <div class="container">
-            <h2 style="margin-bottom:40px; text-align:center;">Education & Certifications</h2>
-            
-            <!-- Education -->
-            <div style="margin-bottom:60px;">
-                 <h3 style="margin-bottom:25px; border-left:4px solid var(--primary); padding-left:15px; font-size:1.5rem;">Education</h3>
-                 <div class="grid grid-2">
-                    <div class="card">
-                        <h3>Queen Mary University of London</h3>
-                        <p style="font-size:0.95rem; color:var(--primary); font-weight:600;">M.Sc. Big Data Science (Distinction)</p>
-                        <p style="font-size:0.85rem; color:var(--text-muted); margin-top:5px;">2024 - 2025</p>
-                    </div>
-                    <div class="card">
-                        <h3>SRM IST Chennai</h3>
-                        <p style="font-size:0.95rem; color:var(--primary); font-weight:600;">B.Tech Electronics & Communication</p>
-                        <p style="font-size:0.85rem; color:var(--text-muted); margin-top:5px;">2019 - 2023</p>
-                    </div>
-                 </div>
-            </div>
-
-            <!-- Certifications -->
-            <div>
-                <h3 style="margin-bottom:25px; border-left:4px solid var(--primary); padding-left:15px; font-size:1.5rem;">Certifications</h3>
-                <div class="grid grid-3">
-                    
-                    <!-- Cert 1 -->
-                    <div class="cert-card">
-                        <div class="cert-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg></div>
-                        <div class="cert-info">
-                            <h4>Complete Data Engineering With Azure</h4>
-                            <span class="cert-provider">Grow Data Skills</span>
-                        </div>
-                    </div>
-
-                    <!-- Cert 2 -->
-                    <div class="cert-card">
-                        <div class="cert-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg></div>
-                        <div class="cert-info">
-                            <h4>SQL Associate</h4>
-                            <span class="cert-provider">DataCamp</span>
-                        </div>
-                    </div>
-
-                    <!-- Cert 3 -->
-                    <div class="cert-card">
-                        <div class="cert-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg></div>
-                        <div class="cert-info">
-                            <h4>AI & Machine Learning</h4>
-                            <span class="cert-provider">upGrad Campus</span>
-                        </div>
-                    </div>
-
-                    <!-- Cert 4 -->
-                    <div class="cert-card">
-                        <div class="cert-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg></div>
-                        <div class="cert-info">
-                            <h4>Data Science & ML Course</h4>
-                            <span class="cert-provider">Coding Ninjas</span>
-                        </div>
-                    </div>
-
-                    <!-- Cert 5 -->
-                    <div class="cert-card">
-                        <div class="cert-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg></div>
-                        <div class="cert-info">
-                            <h4>Python Foundation & Data Structures</h4>
-                            <span class="cert-provider">CareerLabs</span>
-                        </div>
-                    </div>
-
-                    <!-- Cert 6 -->
-                    <div class="cert-card">
-                        <div class="cert-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg></div>
-                        <div class="cert-info">
-                            <h4>Power BI Data Analytics</h4>
-                            <span class="cert-provider">Codebasics</span>
-                        </div>
-                    </div>
-
-                    <!-- Cert 7 -->
-                    <div class="cert-card">
-                        <div class="cert-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg></div>
-                        <div class="cert-info">
-                            <h4>Google Cloud & AWS Networking</h4>
-                            <span class="cert-provider">Coursera</span>
-                        </div>
-                    </div>
-
-                    <!-- Cert 8 -->
-                    <div class="cert-card">
-                        <div class="cert-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg></div>
-                        <div class="cert-info">
-                            <h4>Google Data Analytics</h4>
-                            <span class="cert-provider">Google</span>
-                        </div>
-                    </div>
-
-                    <!-- Cert 9 -->
-                    <div class="cert-card">
-                        <div class="cert-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg></div>
-                        <div class="cert-info">
-                            <h4>RHCSA, RHCE, AWS & Docker</h4>
-                            <span class="cert-provider">COSS</span>
-                        </div>
-                    </div>
-
-                    <!-- Cert 10 -->
-                    <div class="cert-card">
-                        <div class="cert-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg></div>
-                        <div class="cert-info">
-                            <h4>Data Science & Analytics</h4>
-                            <span class="cert-provider">upGrad Campus</span>
-                        </div>
-                    </div>
-
-                    <!-- Cert 11 -->
-                    <div class="cert-card">
-                        <div class="cert-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg></div>
-                        <div class="cert-info">
-                            <h4>Introduction to Python</h4>
-                            <span class="cert-provider">Coding Ninjas</span>
-                        </div>
-                    </div>
-
-                    <!-- Cert 12 -->
-                    <div class="cert-card">
-                        <div class="cert-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg></div>
-                        <div class="cert-info">
-                            <h4>Data Science & ML with R</h4>
-                            <span class="cert-provider">Udemy</span>
-                        </div>
-                    </div>
-
-                     <!-- Cert 13 -->
-                     <div class="cert-card">
-                        <div class="cert-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg></div>
-                        <div class="cert-info">
-                            <h4>Excel: Business Intelligence</h4>
-                            <span class="cert-provider">Codebasics</span>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer class="section" style="border-top:1px solid var(--border); text-align:center;">
-        <div class="container">
-            <h3>Let's Connect</h3>
-            <p style="color:var(--text-muted); margin:10px 0 20px;">Open for Data Engineering & Analytics opportunities.</p>
-            <div style="font-size:0.9rem; color:var(--text-muted);">
-                &copy; 2024 Ayush Kumar Sahu
-            </div>
-        </div>
-    </footer>
-
-    <!-- RESUME MODAL HTML -->
-    <div id="resume-modal" class="hidden modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Resume Preview</h2>
-                <div class="flex gap-2">
-                    <button class="btn btn-primary" onclick="window.print()">Print / Save PDF</button>
-                    <button class="btn btn-outline" onclick="toggleModal(false)">Close</button>
-                </div>
-            </div>
-            <div class="resume-body" id="resume-print-area">
-                <div style="border-bottom:2px solid #333; padding-bottom:20px; margin-bottom:20px;">
-                    <h1 style="font-size:2.5rem; text-transform:uppercase; margin-bottom:5px;">Ayush Kumar Sahu</h1>
-                    <p style="font-size:1.1rem; color:#555;">Data Analyst | Data Engineer | M.Sc. Big Data Science</p>
-                    <p style="font-size:0.9rem; margin-top:5px;">ayushkusahuk@gmail.com | London, UK</p>
-                </div>
-
-                <div class="resume-section">
-                    <h2>Technical Skills</h2>
-                    <p><strong>Data Engineering:</strong> Apache Spark (PySpark), Kafka, Hadoop, Airflow, dbt, Snowflake, Databricks</p>
-                    <p style="margin-top:5px;"><strong>Analysis:</strong> Power BI (DAX), Tableau, Advanced Excel, Google Analytics</p>
-                    <p style="margin-top:5px;"><strong>Cloud/DevOps:</strong> AWS, Azure, GCP, Docker, Kubernetes, Terraform</p>
-                    <p style="margin-top:5px;"><strong>Programming:</strong> Python, SQL, Java, Scala</p>
-                </div>
-
-                <div class="resume-section">
-                    <h2>Experience</h2>
-                    <div style="margin-bottom:15px;">
-                        <div class="flex justify-between"><strong>Data Analyst Intern</strong> <span>Sep 2023 – Jan 2024</span></div>
-                        <div>Corizo | Remote</div>
-                        <ul style="list-style:disc; margin-left:20px; font-size:0.95rem; margin-top:5px;">
-                            <li>Focused on SQL, Excel, and Power BI.</li>
-                            <li>Key Achievement: Drove 10% improvement in operational decision-making.</li>
-                        </ul>
-                    </div>
-                    <div style="margin-bottom:15px;">
-                        <div class="flex justify-between"><strong>Data Science Intern</strong> <span>Apr 2023 – Jul 2023</span></div>
-                        <div>Rubixe | On-site</div>
-                        <ul style="list-style:disc; margin-left:20px; font-size:0.95rem; margin-top:5px;">
-                            <li>Focused on ML models using Scikit-learn and Python.</li>
-                            <li>Key Achievement: Enhanced predictive accuracy by 20%.</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="resume-section">
-                    <h2>Featured Projects</h2>
-                    <div style="margin-bottom:10px;">
-                        <strong>Stock Market Data Pipeline:</strong> Real-time data pipeline using Kafka and Snowflake.
-                    </div>
-                    <div style="margin-bottom:10px;">
-                        <strong>Vendor Performance Analytics:</strong> Statistical analysis to optimize supply chain costs using Python.
-                    </div>
-                </div>
-
-                <div class="resume-section">
-                    <h2>Certifications</h2>
-                    <ul style="list-style:disc; margin-left:20px; font-size:0.95rem;">
-                        <li>Complete Data Engineering With Azure (Grow Data Skills)</li>
-                        <li>SQL Associate (DataCamp)</li>
-                        <li>AI & Machine Learning (upGrad Campus)</li>
-                        <li>Data Science & ML Course (Coding Ninjas)</li>
-                        <li>Python Foundation & Data Structures (CareerLabs)</li>
-                        <li>Power BI Data Analytics (Codebasics)</li>
-                        <li>Google Cloud & AWS Networking (Coursera)</li>
-                        <li>Google Data Analytics (Google)</li>
-                        <li>RHCSA, RHCE, AWS & Docker (COSS)</li>
-                        <li>Data Science & Analytics (upGrad Campus)</li>
-                        <li>Introduction to Python (Coding Ninjas)</li>
-                        <li>Data Science & ML with R (Udemy)</li>
-                        <li>Excel: Business Intelligence (Codebasics)</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+  return (
+    <div
+      ref={domRef}
+      className={`transition-all duration-1000 ease-out transform ${
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+      }`}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      {children}
     </div>
+  );
+};
 
-    <!-- JAVASCRIPT LOGIC -->
-    <script>
-        // Theme Toggle Logic
-        const themeBtn = document.getElementById('theme-btn');
-        const sunIcon = document.getElementById('sun-icon');
-        const moonIcon = document.getElementById('moon-icon');
-        const body = document.body;
+// --- DATA CONSTANTS ---
 
-        themeBtn.addEventListener('click', () => {
-            body.classList.toggle('dark-mode');
-            if (body.classList.contains('dark-mode')) {
-                sunIcon.classList.remove('hidden');
-                moonIcon.classList.add('hidden');
-            } else {
-                sunIcon.classList.add('hidden');
-                moonIcon.classList.remove('hidden');
-            }
-        });
+const skills = [
+  { category: "Data Engineering", icon: <Database className="w-5 h-5" />, items: ["Spark (PySpark)", "Kafka", "Hadoop", "Airflow", "dbt", "Snowflake", "Databricks"] },
+  { category: "Analytics", icon: <LineChart className="w-5 h-5" />, items: ["Power BI (DAX)", "Tableau", "Advanced Excel", "Google Analytics"] },
+  { category: "Programming", icon: <Code className="w-5 h-5" />, items: ["Python", "SQL", "Java", "Scala", "Shell"] },
+  { category: "DevOps & Cloud", icon: <Server className="w-5 h-5" />, items: ["AWS", "Azure", "GCP", "Docker", "Kubernetes", "Terraform"] }
+];
 
-        // Resume Modal Logic
-        const modal = document.getElementById('resume-modal');
-        function toggleModal(show) {
-            if (show) {
-                modal.classList.remove('hidden');
-            } else {
-                modal.classList.add('hidden');
-            }
+const projects = [
+  { title: "End-to-End Stock Market Data Pipeline", type: "Data Engineering", link: "https://www.linkedin.com/posts/ayush-ku-sahu_dataengineering-apachekafka-snowflake-activity-7402961976290869248-kDjR?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ", techStack: ["Apache Kafka", "Snowflake", "Python", "AWS (EC2/S3)", "PySpark"] },
+  { title: "AI Engineering with LangGraph & Azure OpenAI", type: "AI & Engineering", link: "https://www.linkedin.com/posts/ayush-ku-sahu_aiengineering-langgraph-azureopenai-ugcPost-7433119063628750848-rvjm?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ", techStack: ["Python", "LangGraph", "Azure OpenAI", "LLMs", "Vector DB"] },
+  { title: "Data Engineering with AWS & PostgreSQL", type: "Data Engineering", link: "https://www.linkedin.com/posts/ayush-ku-sahu_dataengineering-aws-postgresql-activity-7432220317009465344-8lbq?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ", techStack: ["AWS RDS", "PostgreSQL", "Python", "SQLAlchemy", "Pandas", "ETL"] },
+  { title: "Azure AI & RAG", type: "AI & Engineering", link: "https://www.linkedin.com/posts/ayush-ku-sahu_azure-artificialintelligence-rag-ugcPost-7432723235227648000-z7t6?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ", techStack: ["Azure", "Python", "RAG Architecture", "OpenAI", "ChromaDB"] },
+  { title: "Data Engineering & DevOps on AWS", type: "Data Engineering", link: "https://www.linkedin.com/posts/ayush-ku-sahu_dataengineering-devops-aws-activity-7428611522131800064--ajn?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ", techStack: ["AWS", "Docker", "CI/CD", "Terraform", "Python"] },
+  { title: "Data Engineering with Databricks & Spark", type: "Data Engineering", link: "https://www.linkedin.com/posts/ayush-ku-sahu_dataengineering-databricks-spark-activity-7426599481413926912-GAwy?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ", techStack: ["Databricks", "Apache Spark", "PySpark", "Python", "Delta Lake"] },
+  { title: "Data Engineering First Principles in Python", type: "Data Engineering", link: "https://www.linkedin.com/posts/ayush-ku-sahu_dataengineering-firstprinciples-python-activity-7430408372828454912-UhoQ?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ", techStack: ["Python", "Pandas", "SQLAlchemy", "MySQL", "PostgreSQL"] },
+  { title: "Vendor Performance Analytics", type: "Analytics", link: "https://www.linkedin.com/posts/ayush-ku-sahu_vendor-data-analysis-i-recently-completed-activity-7396481664593362944-YkX5?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ", techStack: ["Power BI", "DAX", "SQL", "Advanced Excel"] },
+  { title: "Telecom Strategy Analytics", type: "Analytics", link: "https://www.linkedin.com/posts/ayush-ku-sahu_dataanalytics-telecomstrategy-powerquery-activity-7398515931225812992-oFvI?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ", techStack: ["Power BI", "Power Query", "Data Modeling", "SQL"] },
+  { title: "Business Intelligence Dashboard (Initial Post)", type: "Analytics", link: "https://www.linkedin.com/posts/ayush-ku-sahu_dataanalytics-powerbi-businessintelligence-activity-7400807941794365440-6KlT?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ", techStack: ["Power BI", "DAX", "SQL Server", "Data Viz"] },
+  { title: "E-Commerce Inventory Analytics", type: "GitHub Repository", link: "https://github.com/EAZY-647/E-Commerce-Inventory-Analytics", techStack: ["Python", "Pandas", "SQL", "Matplotlib"] },
+  { title: "Customer Shopping Analysis", type: "GitHub Repository", link: "https://github.com/EAZY-647/customer_shopping_anlyasis", techStack: ["Python", "Pandas", "Scikit-learn", "EDA"] },
+  { title: "HealthEdgeAI", type: "GitHub Repository", link: "https://github.com/EAZY-647/healthedgeai", techStack: ["Python", "Machine Learning", "Scikit-learn", "FastAPI"] },
+];
+
+const liveDashboards = [
+  { title: "Business Intelligence / Power BI Dashboard", link: "https://lnkd.in/gNn-wDQZ", post: "https://www.linkedin.com/posts/ayush-ku-sahu_dataanalyst-businessintelligence-powerbi-activity-7421240683233091584-N9UP?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ", techStack: ["Power BI", "DAX", "Power Query"] },
+  { title: "Sales Dashboard", link: "https://lnkd.in/eRQMhRqx", post: "https://www.linkedin.com/posts/ayush-ku-sahu_powerbi-dataanalytics-salesdashboard-activity-7414954730789064704-LpDQ?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ", techStack: ["Power BI", "Data Modeling", "DAX"] },
+  { title: "Insurance Analysis Dashboard", link: "https://lnkd.in/eDH6rg43", post: "https://www.linkedin.com/posts/ayush-ku-sahu_dataanalytics-businessintelligence-insuranceanalysis-activity-7412615371779690497-ZUBX?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ", techStack: ["Power BI", "SQL", "Advanced Excel"] },
+  { title: "Healthcare Innovation Dashboard", link: "https://lnkd.in/e_4JJ6hB", post: "https://www.linkedin.com/posts/ayush-ku-sahu_dataanalytics-healthcareinnovation-powerbi-activity-7409928613812363266-eUAE?utm_source=share&utm_medium=member_desktop&rcm=ACoAADfCCVUBfJGVf6diArVoCo-RZ0MfxP8HAdQ", techStack: ["Power BI", "Healthcare Analytics", "DAX"] }
+];
+
+const certifications = [
+  "Anthropic Claude Code in Action",
+  "Complete Data Engineering With Azure (Grow Data Skills)",
+  "SQL Associate (DataCamp)",
+  "AI & Machine Learning (upGrad Campus)",
+  "Data Science & ML Course (Coding Ninjas)",
+  "Python Foundation & Data Structures (CareerLabs)",
+  "Power BI Data Analytics (Codebasics)",
+  "Google Cloud & AWS Networking (Coursera)",
+  "Google Data Analytics (Google)",
+  "RHCSA, RHCE, AWS & Docker (COSS)",
+  "Data Science & Analytics (upGrad Campus)",
+  "Introduction to Python (Coding Ninjas)",
+  "Data Science & ML with R (Udemy)",
+  "Excel: Business Intelligence (Codebasics)"
+];
+
+// --- MAIN COMPONENT ---
+
+export default function App() {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  return (
+    <div className={isDarkMode ? "dark" : ""}>
+      {/* Custom Styles for Advanced Animations */}
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes blob {
+          0% { transform: translate(0px, 0px) scale(1); }
+          33% { transform: translate(30px, -50px) scale(1.1); }
+          66% { transform: translate(-20px, 20px) scale(0.9); }
+          100% { transform: translate(0px, 0px) scale(1); }
         }
+        .animate-blob { animation: blob 7s infinite; }
+        .animation-delay-2000 { animation-delay: 2s; }
+        .animation-delay-4000 { animation-delay: 4s; }
+        html { scroll-behavior: smooth; }
+      `}} />
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-300 font-sans selection:bg-blue-200 dark:selection:bg-blue-900 transition-colors duration-500 overflow-hidden relative">
+        
+        {/* HEADER / HERO SECTION */}
+        <header className="relative pt-24 pb-20 px-6 sm:px-12 border-b border-blue-100 dark:border-slate-800 bg-gradient-to-b from-sky-50 to-white dark:from-slate-900 dark:to-slate-950 transition-colors duration-500 overflow-hidden">
+          {/* Animated Background Blobs */}
+          <div className="absolute top-0 left-1/4 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 dark:opacity-10 animate-blob"></div>
+          <div className="absolute top-0 right-1/4 w-72 h-72 bg-teal-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 dark:opacity-10 animate-blob animation-delay-2000"></div>
+          <div className="absolute -bottom-8 left-1/3 w-72 h-72 bg-indigo-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 dark:opacity-10 animate-blob animation-delay-4000"></div>
 
-        // Close modal if clicked outside
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                toggleModal(false);
-            }
-        });
-    </script>
-</body>
-</html>
+          <div className="max-w-6xl mx-auto relative z-10">
+            <FadeInSection>
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+                <div>
+                  <div className="flex items-center gap-3 mb-6">
+                    <span className="px-4 py-1.5 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800/50 rounded-full text-xs font-bold tracking-wider uppercase shadow-sm flex items-center gap-2">
+                      <span className="relative flex h-2.5 w-2.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500"></span>
+                      </span>
+                      Available for Opportunities
+                    </span>
+                    <span className="flex items-center gap-1 text-slate-500 dark:text-slate-400 text-sm font-medium bg-white/50 dark:bg-slate-800/50 px-3 py-1.5 rounded-full backdrop-blur-sm border border-slate-200 dark:border-slate-700">
+                      <MapPin className="w-4 h-4 text-blue-500" /> United Kingdom
+                    </span>
+                  </div>
+                  <h1 className="text-5xl md:text-7xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-4">
+                    Ayush Kumar <br className="hidden md:block"/>
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-teal-400 dark:from-blue-400 dark:to-teal-300">Sahu</span>
+                  </h1>
+                  <p className="text-xl md:text-2xl text-slate-600 dark:text-slate-300 font-medium mb-3">
+                    Data Engineer | M.Sc. Big Data Science
+                  </p>
+                  <p className="text-slate-500 dark:text-slate-400 italic text-lg max-w-2xl">"Architecting robust data pipelines and scalable infrastructure."</p>
+                </div>
+                
+                <div className="flex gap-4 items-center">
+                  {/* Theme Toggle Button */}
+                  <button 
+                    onClick={() => setIsDarkMode(!isDarkMode)} 
+                    className="p-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-all shadow-sm hover:shadow-md hover:-translate-y-1 active:scale-95 group" 
+                    aria-label="Toggle Theme"
+                  >
+                    {isDarkMode ? (
+                      <Sun className="w-5 h-5 group-hover:rotate-90 transition-transform duration-500 text-amber-400" />
+                    ) : (
+                      <Moon className="w-5 h-5 group-hover:-rotate-12 transition-transform duration-500 text-slate-600" />
+                    )}
+                  </button>
+
+                  <a href="mailto:ayushkusahuk@gmail.com" className="p-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-all shadow-sm hover:shadow-md hover:-translate-y-1 active:scale-95 group" aria-label="Email">
+                    <Mail className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  </a>
+                  <a href="https://www.linkedin.com/in/ayush-ku-sahu/" target="_blank" rel="noopener noreferrer" className="p-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-all shadow-sm hover:shadow-md hover:-translate-y-1 active:scale-95 group" aria-label="LinkedIn">
+                    <Linkedin className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  </a>
+                  <a href="https://github.com/EAZY-647?tab=repositories" target="_blank" rel="noopener noreferrer" className="p-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-all shadow-sm hover:shadow-md hover:-translate-y-1 active:scale-95 group" aria-label="GitHub">
+                    <Github className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  </a>
+                </div>
+              </div>
+            </FadeInSection>
+          </div>
+        </header>
+
+        {/* NAVIGATION TABS */}
+        <div className="sticky top-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm transition-colors duration-300">
+          <div className="max-w-6xl mx-auto px-6 sm:px-12 flex gap-6 overflow-x-auto no-scrollbar">
+            <a href="#overview" className="py-4 text-sm font-bold transition-all border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-600 dark:hover:border-blue-400 whitespace-nowrap active:scale-95">Overview</a>
+            <a href="#projects" className="py-4 text-sm font-bold transition-all border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-600 dark:hover:border-blue-400 whitespace-nowrap active:scale-95">Projects</a>
+            <a href="#dashboards" className="py-4 text-sm font-bold transition-all border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-600 dark:hover:border-blue-400 whitespace-nowrap active:scale-95">Dashboards</a>
+          </div>
+        </div>
+
+        <main className="max-w-6xl mx-auto px-6 sm:px-12 py-12 space-y-32">
+          
+          {/* SECTION 1: OVERVIEW */}
+          <div id="overview" className="space-y-24 scroll-mt-24">
+            
+            {/* About Section */}
+            <FadeInSection>
+              <section className="grid md:grid-cols-3 gap-8 items-start relative">
+                {/* Decorative element */}
+                <div className="absolute -left-10 top-10 w-20 h-20 bg-blue-500/10 rounded-full blur-2xl dark:bg-blue-400/10"></div>
+                
+                <div className="md:col-span-2 space-y-4 relative z-10">
+                  <h2 className="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+                    <Terminal className="w-8 h-8 text-blue-500" /> About Me
+                  </h2>
+                  <div className="text-slate-600 dark:text-slate-300 leading-relaxed space-y-4 text-lg">
+                    <p>
+                      I am a dedicated Data Engineer specializing in designing, building, and optimizing robust data architectures and scalable ETL/ELT pipelines. With an M.Sc. in Big Data Science and deep expertise in distributed systems (Spark, Kafka), relational databases (PostgreSQL), and cloud platforms (AWS, Azure), I focus on processing complex data streams into reliable, high-performing infrastructure. I am passionate about building fault-tolerant systems that lay the foundation for advanced analytics and AI.
+                    </p>
+                  </div>
+                </div>
+                <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-lg hover:shadow-xl hover:border-blue-300 dark:hover:border-slate-600 transition-all hover:-translate-y-1 relative z-10">
+                  <h3 className="font-bold text-slate-900 dark:text-white mb-4 uppercase text-sm tracking-wider flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Current Role
+                  </h3>
+                  <div className="flex items-start gap-3">
+                    <div className="p-3 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl">
+                      <Briefcase className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-lg text-slate-800 dark:text-slate-200">Data Engineer</h4>
+                      <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">ByteIQ Analytics (Full-time)</p>
+                      <p className="text-xs font-bold text-blue-600 dark:text-blue-400 mt-2 bg-blue-50 dark:bg-blue-900/40 inline-block px-2.5 py-1 rounded-md shadow-sm">Jan 2026 – Present</p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </FadeInSection>
+
+            {/* GitHub Activity */}
+            <FadeInSection delay={100}>
+              <section>
+                <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3">
+                  <Github className="w-8 h-8 text-blue-500" /> GitHub Activity
+                </h2>
+                <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 p-4 rounded-2xl overflow-x-auto shadow-lg hover:shadow-xl transition-shadow">
+                  <img 
+                    src="https://ghchart.rshah.org/2563eb/EAZY-647" 
+                    alt="Ayush's GitHub Activity Chart" 
+                    className="min-w-[700px] w-full hover:scale-[1.01] transition-transform duration-500"
+                  />
+                </div>
+              </section>
+            </FadeInSection>
+
+            {/* Technical Expertise */}
+            <FadeInSection delay={200}>
+              <section>
+                <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-8">Technical Expertise</h2>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {skills.map((skillGroup, idx) => (
+                    <div key={idx} className="group bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl p-6 hover:border-blue-400 dark:hover:border-blue-500 shadow-lg hover:shadow-blue-500/10 transition-all hover:-translate-y-2">
+                      <div className="flex items-center gap-3 mb-6 text-blue-600 dark:text-blue-400 group-hover:scale-105 transition-transform origin-left">
+                        <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg group-hover:bg-blue-100 dark:group-hover:bg-blue-900/50 transition-colors">
+                          {skillGroup.icon}
+                        </div>
+                        <h3 className="font-bold text-lg text-slate-800 dark:text-slate-200">{skillGroup.category}</h3>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {skillGroup.items.map((skill, i) => (
+                          <span key={i} className="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium text-xs rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-200 dark:hover:border-blue-800 transition-colors cursor-default">
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </FadeInSection>
+
+            {/* Education & Certifications */}
+            <FadeInSection delay={300}>
+              <section className="grid md:grid-cols-2 gap-12">
+                <div>
+                  <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+                    <GraduationCap className="w-6 h-6 text-blue-500" /> Education
+                  </h2>
+                  <div className="space-y-6">
+                    <div className="relative pl-6 border-l-2 border-slate-200 dark:border-slate-700">
+                      <div className="absolute w-3 h-3 bg-blue-500 rounded-full -left-[7px] top-1.5 ring-4 ring-white dark:ring-slate-950"></div>
+                      <h3 className="font-bold text-lg text-slate-800 dark:text-slate-200">Queen Mary University of London</h3>
+                      <p className="text-blue-600 dark:text-blue-400 font-bold">M.Sc. Big Data Science <span className="text-slate-500 dark:text-slate-400 text-sm font-medium">(Distinction)</span></p>
+                      <p className="text-sm text-slate-400 dark:text-slate-500 mt-1 font-medium">2024 - 2025</p>
+                    </div>
+                    <div className="relative pl-6 border-l-2 border-slate-200 dark:border-slate-700">
+                      <div className="absolute w-3 h-3 bg-slate-300 dark:bg-slate-600 rounded-full -left-[7px] top-1.5 ring-4 ring-white dark:ring-slate-950"></div>
+                      <h3 className="font-bold text-lg text-slate-800 dark:text-slate-200">SRM IST Chennai</h3>
+                      <p className="text-slate-600 dark:text-slate-300 font-medium">B.Tech Electronics & Communication</p>
+                      <p className="text-sm text-slate-400 dark:text-slate-500 mt-1 font-medium">2019 - 2023</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+                    <Award className="w-6 h-6 text-blue-500" /> Certifications
+                  </h2>
+                  <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow max-h-[300px] overflow-y-auto no-scrollbar">
+                    <ul className="space-y-3">
+                      {certifications.map((cert, idx) => (
+                        <li key={idx} className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-300 font-medium hover:translate-x-1 transition-transform">
+                          <Award className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
+                          <span>{cert}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </section>
+            </FadeInSection>
+          </div>
+
+          {/* SECTION 2: PROJECTS */}
+          <div id="projects" className="space-y-8 scroll-mt-24 pt-12 border-t border-slate-200 dark:border-slate-800 relative">
+            {/* Decorative blob */}
+            <div className="absolute right-0 top-0 w-64 h-64 bg-teal-400/5 rounded-full blur-3xl animate-pulse"></div>
+
+            <div className="flex items-center justify-between mb-8 relative z-10">
+              <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Data Engineering & AI Projects</h2>
+              </div>
+              
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
+                {projects.map((proj, idx) => (
+                  <FadeInSection key={idx} delay={idx * 50}>
+                    <a 
+                      href={proj.link} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="group h-full flex flex-col bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-400 dark:hover:border-blue-500 overflow-hidden relative"
+                    >
+                      {/* Hover gradient background effect */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent dark:from-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                      
+                      <div className="flex justify-between items-start mb-4 relative z-10">
+                        <span className="text-xs font-bold px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-blue-600 dark:text-blue-400 rounded-lg border border-slate-200 dark:border-slate-700 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40 group-hover:border-blue-300 dark:group-hover:border-blue-700 transition-colors shadow-sm">
+                          {proj.type}
+                        </span>
+                        <div className="p-2 bg-slate-50 dark:bg-slate-800 rounded-full group-hover:bg-blue-50 dark:group-hover:bg-blue-900/40 transition-colors">
+                          <ExternalLink className="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors group-hover:rotate-12" />
+                        </div>
+                      </div>
+                      <h3 className="font-bold text-xl text-slate-800 dark:text-slate-200 group-hover:text-blue-700 dark:group-hover:text-blue-400 mb-3 leading-tight relative z-10 transition-colors">
+                        {proj.title}
+                      </h3>
+                      <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 mb-8 font-medium group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors relative z-10">
+                        Click to view detailed project documentation and architecture.
+                      </p>
+                      
+                      {/* Render Tech Stack Tags if they exist */}
+                      {proj.techStack && (
+                        <div className="flex flex-wrap gap-2 mt-auto relative z-10">
+                          {proj.techStack.map((tech, i) => (
+                            <span key={i} className="px-2.5 py-1 bg-white dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 group-hover:border-blue-200 dark:group-hover:border-blue-800/50 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors shadow-sm">
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </a>
+                  </FadeInSection>
+                ))}
+              </div>
+            </div>
+
+          {/* SECTION 3: DASHBOARDS */}
+          <div id="dashboards" className="space-y-12 scroll-mt-24 pt-12 border-t border-slate-200 dark:border-slate-800">
+            
+            {/* Featured Interactive Dashboard */}
+            <FadeInSection>
+              <section className="space-y-6">
+                <div className="flex justify-between items-end">
+                  <div>
+                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-3">
+                      <LineChart className="w-8 h-8 text-blue-500" /> Featured Interactive Dashboard
+                    </h2>
+                    <p className="text-slate-600 dark:text-slate-400 text-lg">Fully interactive Business Intelligence reporting tool built with Power BI.</p>
+                  </div>
+                </div>
+                
+                <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm p-3 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl hover:shadow-2xl transition-shadow hover:border-blue-300 dark:hover:border-slate-600">
+                  <div className="aspect-video w-full relative rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-100 dark:border-slate-800">
+                    {/* PowerBI Iframe Embed */}
+                    <iframe 
+                      title="Main Power BI Dashboard" 
+                      src="https://app.powerbi.com/view?r=eyJrIjoiYTIxMzRlM2QtODI0OC00Yzc0LTk5N2ItZTNiNDgzNGY0Y2NjIiwidCI6ImM2ZTU0OWIzLTVmNDUtNDAzMi1hYWU5LWQ0MjQ0ZGM1YjJjNCJ9" 
+                      allowFullScreen={true} 
+                      className="absolute top-0 left-0 w-full h-full border-0"
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
+            </FadeInSection>
+
+            {/* Other Live Dashboards Grid */}
+            <FadeInSection delay={100}>
+              <section>
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-8">More Live Analytics Links</h3>
+                <div className="grid md:grid-cols-2 gap-8">
+                  {liveDashboards.map((dash, idx) => (
+                    <div key={idx} className="group bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 shadow-lg hover:shadow-xl rounded-2xl p-8 flex flex-col justify-between hover:border-blue-400 dark:hover:border-blue-500 transition-all hover:-translate-y-2 relative overflow-hidden">
+                      {/* Hover gradient background effect */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent dark:from-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                      <div className="relative z-10">
+                        <h4 className="font-bold text-xl text-slate-800 dark:text-slate-200 mb-3 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">{dash.title}</h4>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 font-medium mb-6">Interactive data visualization and business insights tracking key metrics.</p>
+                        
+                        {/* Render Tech Stack Tags for Dashboards */}
+                        {dash.techStack && (
+                          <div className="flex flex-wrap gap-2 mb-8">
+                            {dash.techStack.map((tech, i) => (
+                              <span key={i} className="px-2.5 py-1 bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider rounded-md border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-blue-200 dark:group-hover:border-blue-800/50 transition-colors">
+                                {tech}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex gap-4 mt-auto relative z-10">
+                        <a 
+                          href={dash.link} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex-1 flex items-center justify-center gap-2 bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white py-3 px-4 rounded-xl text-sm font-bold transition-all shadow-md hover:shadow-lg active:scale-95"
+                        >
+                          <LineChart className="w-4 h-4" /> Live Dashboard
+                        </a>
+                        <a 
+                          href={dash.post} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex-1 flex items-center justify-center gap-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 py-3 px-4 rounded-xl text-sm font-bold transition-all border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md active:scale-95 group/btn"
+                        >
+                          <Linkedin className="w-4 h-4 text-blue-600 dark:text-blue-400 group-hover/btn:scale-110 transition-transform" /> LinkedIn Post
+                        </a>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </FadeInSection>
+          </div>
+        </main>
+
+        {/* FOOTER */}
+        <footer className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 py-8 mt-12 text-center transition-colors duration-300">
+          <div className="max-w-6xl mx-auto px-6 text-slate-500 dark:text-slate-400 text-sm font-medium">
+            <p>© {new Date().getFullYear()} Ayush Kumar Sahu. All rights reserved.</p>
+            <p className="mt-2 text-slate-400 dark:text-slate-500">Built for Data Engineering & Analytics excellence.</p>
+          </div>
+        </footer>
+      </div>
+    </div>
+  );
+}
