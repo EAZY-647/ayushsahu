@@ -816,12 +816,6 @@
         const themeIconSun = document.getElementById('theme-icon-sun');
         const htmlElement = document.documentElement;
 
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            htmlElement.classList.add('dark');
-            themeIconMoon.classList.add('hidden');
-            themeIconSun.classList.remove('hidden');
-        }
-
         themeToggleBtn.addEventListener('click', () => {
             htmlElement.classList.toggle('dark');
             if (htmlElement.classList.contains('dark')) {
@@ -905,11 +899,20 @@
 
         // 8. Mouse Tracking Spotlight Effect
         const spotlight = document.getElementById('spotlight');
+        let mouseX = undefined;
+        let mouseY = undefined;
+
         window.addEventListener('mousemove', (e) => {
-            spotlight.style.background = `radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(59, 130, 246, 0.08), transparent 40%)`;
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            spotlight.style.background = `radial-gradient(600px circle at ${mouseX}px ${mouseY}px, rgba(59, 130, 246, 0.08), transparent 40%)`;
             if(spotlight.classList.contains('opacity-0')) spotlight.classList.remove('opacity-0');
         });
-        window.addEventListener('mouseout', () => spotlight.classList.add('opacity-0'));
+        window.addEventListener('mouseout', () => {
+            mouseX = undefined;
+            mouseY = undefined;
+            spotlight.classList.add('opacity-0');
+        });
 
         // 9. 3D Tilt Effect for Project Cards
         document.querySelectorAll('.tilt-card').forEach(card => {
@@ -995,6 +998,29 @@
                         ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
                         ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
                         ctx.stroke();
+                    }
+                }
+                
+                // Magnetically connect to mouse cursor
+                if (mouseX != undefined && mouseY != undefined) {
+                    // Check if mouse is hovering over the header section
+                    const headerHeight = document.getElementById('home').offsetHeight;
+                    if(mouseY <= headerHeight) {
+                        let dx = mouseX - particlesArray[a].x;
+                        // Adjust Y slightly to account for scrolling if needed, but since it's absolute to top it's fine
+                        let dy = mouseY - particlesArray[a].y; 
+                        let distanceToMouse = dx*dx + dy*dy;
+                        
+                        if (distanceToMouse < 30000) {
+                            opacityValue = 1 - (distanceToMouse / 30000);
+                            let isDark = htmlElement.classList.contains('dark');
+                            ctx.strokeStyle = isDark ? `rgba(96, 165, 250, ${opacityValue * 0.5})` : `rgba(59, 130, 246, ${opacityValue * 0.5})`;
+                            ctx.lineWidth = 1.5;
+                            ctx.beginPath();
+                            ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                            ctx.lineTo(mouseX, mouseY);
+                            ctx.stroke();
+                        }
                     }
                 }
             }
